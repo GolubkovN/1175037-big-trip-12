@@ -1,7 +1,7 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Никита Голубков](https://up.htmlacademy.ru/ecmascript/12/user/1175037).
-* Наставник: `Неизвестно`.
+* Наставник: [Сергей Шершнев](https://htmlacademy.ru/profile/shv_sergey).
 
 ---
 
