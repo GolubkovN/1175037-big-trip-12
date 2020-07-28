@@ -1,6 +1,6 @@
 'use strict';
 
-//Header
+// Header
 const createHeaderInfoTemplate = () => {
   return (
     `<section class="trip-main__trip-info  trip-info">
@@ -49,7 +49,7 @@ const createHeaderFilterTemplate = () => {
   );
 };
 
-//main
+// main
 const createSortingTemplate = () => {
   return (
     `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
@@ -357,14 +357,14 @@ const controlsElement = document.querySelector(`.trip-main__trip-controls`);
 render(controlsElement, createHeaderControlsTemplate(), `afterbegin`);
 render(controlsElement, createHeaderFilterTemplate(), `beforeend`);
 
-//sorting
+// sorting
 const tripEventsElement = document.querySelector(`.trip-events`);
 render(tripEventsElement, createSortingTemplate(), `afterbegin`);
 
-//form edit
+// form edit
 render(tripEventsElement, createEditFormTemplate(), `beforeend`);
 
-const EditFormElement = tripEventsElement.querySelector(`.trip-events__item.event.event--edit`)
+const EditFormElement = tripEventsElement.querySelector(`.trip-events__item.event.event--edit`);
 render(EditFormElement, createFormHeaderTemplate(), `afterbegin`);
 
 const eventDetailsElement = EditFormElement.querySelector(`.event__details`);
