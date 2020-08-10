@@ -8,7 +8,11 @@ import {createDaysListTemplate} from './view/days-list.js';
 import {createDaysItemTemplate} from './view/days-item.js';
 import {createDayInfoTemplate} from './view/day-info.js';
 import {createPointsTemplate} from './view/trip-points.js';
+import {generatePoints} from './mock/points.js';
 
+const POINT_COUNT = 3;
+
+const points = new Array(POINT_COUNT).fill().map(generatePoints);
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -44,8 +48,7 @@ const daysItemElement = daysListElement.querySelector(`.trip-days__item `);
 render(daysItemElement, createDayInfoTemplate(), `afterbegin`);
 
 const dotsListElement = daysItemElement.querySelector(`.trip-events__list`);
-for (let i = 0; i < 3; i++) {
-  render(dotsListElement, createPointsTemplate(), `beforeend`);
+for (let i = 0; i < POINT_COUNT; i++) {
+  render(dotsListElement, createPointsTemplate(points[i]), `beforeend`);
 }
-
 
