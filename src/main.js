@@ -3,7 +3,6 @@ import {createMenuTemplate} from './view/menu.js';
 import {createFilterTemplate} from './view/filter.js';
 import {createSortingTemplate} from './view/sorting.js';
 import {createEditFormTemplate} from './view/form-edit.js';
-import {createEventsDestinationTemplate} from './view/destination.js';
 import {createDaysListTemplate} from './view/days-list.js';
 import {createDaysItemTemplate} from './view/days-item.js';
 import {createDayInfoTemplate} from './view/day-info.js';
@@ -31,12 +30,7 @@ const tripEventsElement = document.querySelector(`.trip-events`);
 render(tripEventsElement, createSortingTemplate(), `afterbegin`);
 
 // form edit
-render(tripEventsElement, createEditFormTemplate(), `beforeend`);
-
-const editFormElement = tripEventsElement.querySelector(`.trip-events__item.event.event--edit`);
-
-const eventDetailsElement = editFormElement.querySelector(`.event__details`);
-render(eventDetailsElement, createEventsDestinationTemplate(), `beforeend`);
+render(tripEventsElement, createEditFormTemplate(points[0]), `beforeend`);
 
 // days list
 render(tripEventsElement, createDaysListTemplate(), `beforeend`);

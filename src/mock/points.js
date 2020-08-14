@@ -1,22 +1,30 @@
-import {PATH_TYPE, DESTINATION, DESCRIPTION} from '../const.js';
+import {PATH_TYPE, DESTINATION, DESCRIPTION, OFFERS} from '../const.js';
 import {getRundomIndex, getRandomInteger} from '../utils.js';
 
-const DATE_RANGE = 2;
+const MAX_DAYS_GAP = 2;
 const LOWER_HOUR_RANGE = 0;
 const UPPER_HOUR_RANGE = 23;
 const LOWER_MINUTE_RANGE = 15;
 const UPPER_MINUTE_RANGE = 300;
 
 const generatePhotos = () => {
-  const getUrl = () => `http://picsum.photos/248/152?r=${Math.random()}`;
-  const photosCount = getRandomInteger(1, 5);
+  const numberOfPhotos = getRandomInteger(1, 6);
+  let eventPhotos = ``;
 
-  return Array(photosCount).fill().map(getUrl);
+  for (let i = 0; i < numberOfPhotos; i++) {
+    eventPhotos += `<img class="event__photo" src="http://picsum.photos/248/152?r=${Math.random()}" alt="Event photo">`;
+  }
+
+  return eventPhotos;
 };
 
 const generateInfo = () => {
   const description = getRundomIndex(DESCRIPTION);
-  const url = generatePhotos();
+  let url = ``;
+
+  if (description !== null) {
+    url = generatePhotos();
+  }
 
   return {
     description,
@@ -24,27 +32,14 @@ const generateInfo = () => {
   };
 };
 
-const generateOffers = () => {
-  const offers = [
-    {title: `Add luggage`, price: 30},
-    {title: `Switch to comfort class`, price: 100},
-    {title: `Add meal`, price: 15},
-    {title: `Choose seats`, price: 5},
-    {title: `Travel by trai`, price: 40},
-  ];
-
-  const randomOffer = getRundomIndex(offers);
-  return randomOffer;
-};
-
 export const generatePoints = () => {
   const type = getRundomIndex(PATH_TYPE);
   const destination = getRundomIndex(DESTINATION);
   const information = generateInfo();
-  const offers = generateOffers();
+  const offers = getRundomIndex(OFFERS);
 
   const timeStart = new Date();
-  const daysRange = getRandomInteger(-DATE_RANGE, DATE_RANGE);
+  const daysRange = getRandomInteger(-MAX_DAYS_GAP, MAX_DAYS_GAP);
   const currentDay = timeStart.getDate();
   timeStart.setDate(currentDay + daysRange);
   const hoursRange = getRandomInteger(LOWER_HOUR_RANGE, UPPER_HOUR_RANGE);
