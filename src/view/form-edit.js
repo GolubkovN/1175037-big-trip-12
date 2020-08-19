@@ -1,4 +1,5 @@
 import {PATH_TYPE, DESTINATION} from '../const.js';
+import {humanizeDate} from '../utils.js';
 
 const createTypesTemplate = (types) => {
   return types.map((type, index) => {
@@ -48,19 +49,7 @@ const createDestinationInfoTemplate = (destination) => {
 
 
 export const createEditFormTemplate = (point = {}) => {
-  const {type, destination, information, offers, pointPrice} = point;
-
-  let startMinutes = point.timeStart.getMinutes();
-  let startHours = point.timeStart.getHours();
-  let startDay = point.timeStart.getDate();
-  let startMonth = point.timeStart.getMonth();
-  let startYear = point.timeStart.getFullYear() % 100;
-
-  let endMinutes = point.timeEnd.getMinutes();
-  let endHours = point.timeEnd.getHours();
-  let endDay = point.timeEnd.getDate();
-  let endMonth = point.timeEnd.getMonth();
-  let endYear = point.timeEnd.getFullYear() % 100;
+  const {type, destination, information, offers, pointPrice, timeStart, timeEnd} = point;
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -98,12 +87,12 @@ export const createEditFormTemplate = (point = {}) => {
           <label class="visually-hidden" for="event-start-time-1">
             From
           </label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDay}/${startMonth}/${startYear} ${startHours}:${startMinutes}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${humanizeDate(timeStart)}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">
             To
           </label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endDay}/${endMonth}/${endYear} ${endHours}:${endMinutes}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${humanizeDate(timeEnd)}">
         </div>
 
         <div class="event__field-group  event__field-group--price">

@@ -28,19 +28,14 @@ const generatePhotos = () => {
   const photosQuantity = getRandomInteger(PhotosCount.MIN, PhotosCount.MAX);
 
   return new Array(photosQuantity)
-    .fill()
+    .fill(``)
     .map(() => `http://picsum.photos/248/152?r=${Math.random()}`);
 };
 
-const generateInfo = () => {
-  const description = getRandomElement(DESCRIPTION);
-  const url = generatePhotos();
-
-  return {
-    description,
-    url,
-  };
-};
+const generateInfo = () => ({
+  description: getRandomElement(DESCRIPTION),
+  url: generatePhotos()
+});
 
 export const generatePoint = () => {
 

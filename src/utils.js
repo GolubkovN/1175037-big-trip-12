@@ -13,6 +13,12 @@ export const getFormatText = (text) => text.toLowerCase().split(` `).join(`-`);
 
 export const formatTime = (date) => new Date(date).toLocaleString(`en-US`, {month: `short`, day: `2-digit`});
 
+export const humanizeDate = (date) => {
+  return date.toLocaleString(`en-GB`, {day: `numeric`, month: `numeric`, year: `2-digit`, hour: `numeric`, minute: `2-digit`});
+};
+
+export const pointZero = (param) => param < 10 ? `0${param}` : `${param}`;
+
 const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`
@@ -33,5 +39,7 @@ export const renderElement = (container, component, place) => {
     case RenderPosition.BEFOREEND:
       container.append(component);
       break;
+    default:
+      throw new Error(`отсутствиe соответствующего значения RenderPosition`);
   }
 };

@@ -1,4 +1,4 @@
-import {getRandomInteger} from '../utils.js';
+import {getRandomInteger, pointZero} from '../utils.js';
 import {OFFERS} from '../const.js';
 
 const CountOffers = {
@@ -6,18 +6,10 @@ const CountOffers = {
   MAX: 5,
 };
 
-const generateOffers = () => {
-  const offers = OFFERS
-    .slice(0, getRandomInteger(CountOffers.MIN, CountOffers.MAX));
-
-  return offers;
-};
-
-const createOfferTemplate = (event) => {
-  event = generateOffers();
-  return event
+const createOfferTemplate = (offers) => {
+  return offers
     .filter((it) => it.isChecked === true)
-    .slice(0, 5)
+    .slice(0, getRandomInteger(CountOffers.MIN, CountOffers.MAX))
     .map((it) =>
       `<li class="event__offer">
         <span class="event__offer-title">${it.title}</span>
@@ -26,29 +18,15 @@ const createOfferTemplate = (event) => {
        </li>`).join(``);
 };
 
+const normalDuration = (duration) => {
+  const hourDuration = Math.floor(duration / 60);
+  const minuteDuration = duration % 60;
+  return hourDuration >= 1 ? `${hourDuration}H ${minuteDuration}M` : `${minuteDuration}M`;
+};
+
 export const createPointsTemplate = (point) => {
   const {type, destination, timeEnd, timeStart, duration, pointPrice} = point;
   const offers = createOfferTemplate(point.offers);
-
-  const normalDuration = () => {
-    const hourDuration = Math.floor(duration / 60);
-    const minuteDuration = duration % 60;
-    if (hourDuration >= 1) {
-      return `${hourDuration}H ${minuteDuration}M`;
-    } else {
-      return `${minuteDuration}M`;
-    }
-  };
-
-  const pointZero = (time) => {
-    let pointZeroCheck = ``;
-    if (time.getMinutes() < 10) {
-      pointZeroCheck = `0`;
-    } else {
-      pointZeroCheck = ``;
-    }
-    return pointZeroCheck;
-  };
 
   return (
     `<li class="trip-events__item">
@@ -60,11 +38,11 @@ export const createPointsTemplate = (point) => {
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">${timeStart.getHours()}:${pointZero(timeStart)}${timeStart.getMinutes()}</time>
+            <time class="event__start-time" datetime="2019-03-18T10:30">${pointZero(timeEnd.getHours())}:${pointZero(timeStart.getMinutes())}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">${timeEnd.getHours()}:${pointZero(timeEnd)}${timeEnd.getMinutes()}</time>
+            <time class="event__end-time" datetime="2019-03-18T11:00">${pointZero(timeEnd.getHours())}:${pointZero(timeEnd.getMinutes())}</time>
           </p>
-          <p class="event__duration">${normalDuration()}</p>
+          <p class="event__duration">${normalDuration(duration)}</p>
         </div>
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${pointPrice}</span>
