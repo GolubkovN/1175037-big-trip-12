@@ -1,5 +1,4 @@
-// import {formatTime} from '../utils.js';
-import {PATH_TYPE, DESTINATION, OFFERS} from '../const.js';
+import {PATH_TYPE, DESTINATION} from '../const.js';
 
 const createTypesTemplate = (types) => {
   return types.map((type, index) => {
@@ -16,12 +15,12 @@ const createPointDestinationTemplate = (destinations) => {
   return destinations.map((destination) => `<option value="${destination}"></option>`).join(`\n`);
 };
 
-const createOfferItemTemplate = (currentOffer) => {
-  return OFFERS.map((offer) => {
+const createOfferItemTemplate = (offers) => {
+  return offers.map((offer) => {
     return (
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" type="checkbox" name="event-offer-${offer.id}"${currentOffer === offer ? `checked` : ``}>
-        <label class="event__offer-label" for="event-offer-${offer.id}-1">
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.title}-1" type="checkbox" name="event-offer-${offer.title}"${offer.isChecked ? `checked` : ``}>
+        <label class="event__offer-label" for="event-offer-${offer.title}-1">
           <span class="event__offer-title">${offer.title}</span>
           &plus;
           &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
@@ -31,49 +30,37 @@ const createOfferItemTemplate = (currentOffer) => {
   }).join(`\n`);
 };
 
-const createDestinationInfoTemplate = (point) => {
+const createDestinationInfoTemplate = (destination) => {
   return (
-    `<section class="event__section  event__section--destination">
-    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-    <p class="event__destination-description">${point.description}</p>
-    <div class="event__photos-container">
-      <div class="event__photos-tape">
-        ${point.url}
+    `<h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      <p class="event__destination-description">
+        ${destination.description}
+      </p>
+      <div class="event__photos-container">
+        <div class="event__photos-tape">
+        ${destination.url.map((photo) =>
+      (`<img class="event__photo" src="${photo}" alt="Event photo">`))
+        .join(``)}
+        </div>
       </div>
-    </div>
-  </section>`);
+  `);
 };
 
 
 export const createEditFormTemplate = (point = {}) => {
   const {type, destination, information, offers} = point;
 
-  let startDay = `01`;
-  let startHours = `00`;
-  let startMinutes = `00`;
-  let startMonth = `01`;
-  let startYear = `01`;
-  let endDay = `01`;
-  let endHours = `00`;
-  let endMinutes = `00`;
-  let endMonth = `01`;
-  let endYear = `01`;
+  let startMinutes = point.timeStart.getMinutes();
+  let startHours = point.timeStart.getHours();
+  let startDay = point.timeStart.getDate();
+  let startMonth = point.timeStart.getMonth();
+  let startYear = point.timeStart.getFullYear() % 100;
 
-  if (point.timeStart !== null) {
-    startMinutes = point.timeStart.getMinutes();
-    startHours = point.timeStart.getHours();
-    startDay = point.timeStart.getDay();
-    startMonth = point.timeStart.getMonth();
-    startYear = point.timeStart.getFullYear() % 100;
-  }
-
-  if (point.timeEnd !== null) {
-    endMinutes = point.timeEnd.getMinutes();
-    endHours = point.timeEnd.getHours();
-    endDay = point.timeEnd.getDay();
-    endMonth = point.timeEnd.getMonth();
-    endYear = point.timeEnd.getFullYear() % 100;
-  }
+  let endMinutes = point.timeEnd.getMinutes();
+  let endHours = point.timeEnd.getHours();
+  let endDay = point.timeEnd.getDate();
+  let endMonth = point.timeEnd.getMonth();
+  let endYear = point.timeEnd.getFullYear() % 100;
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">

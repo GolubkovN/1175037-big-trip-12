@@ -1,10 +1,37 @@
-import {formatTime} from '../utils.js';
+import {getRandomInteger, formatTime} from '../utils.js';
+import {OFFERS} from '../const.js';
+
+const CountOffers = {
+  MIN: 0,
+  MAX: 5,
+};
+
+const generateOffers = () => {
+  const offers = OFFERS
+    .slice(0, getRandomInteger(CountOffers.MIN, CountOffers.MAX));
+
+  return offers;
+};
+
+const createOfferTemplate = (event) => {
+  event = generateOffers();
+  return event
+    .filter((it) => it.isChecked === true)
+    .slice(0, 5)
+    .map((it) =>
+      `<li class="event__offer">
+        <span class="event__offer-title">${it.title}</span>
+          &plus;
+          &euro;&nbsp;<span class="event__offer-price">${it.price}</span>
+       </li>`).join(``);
+};
 
 export const createPointsTemplate = (point) => {
-  const {type, destination, timeEnd, timeStart, totalPrice, offers} = point;
+  const {type, destination, timeEnd, timeStart, PointPrice} = point;
+
   const start = timeStart.toLocaleString().slice(12, 17);
   const end = timeEnd.toLocaleString().slice(12, 17);
-  const price = totalPrice + offers.price;
+  const offers = createOfferTemplate(point.offers);
 
   return (
     `<li class="trip-events__item">
@@ -23,16 +50,12 @@ export const createPointsTemplate = (point) => {
           <p class="event__duration">${formatTime(timeEnd - timeStart)}</p>
         </div>
         <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">${price}</span>
+          &euro;&nbsp;<span class="event__price-value">${PointPrice}</span>
         </p>
 
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          <li class="event__offer">
-            <span class="event__offer-title">${offers.title}</span>
-            &plus;
-            &euro;&nbsp;<span class="event__offer-price">${offers.price}</span>
-          </li>
+          ${offers}
         </ul>
 
         <button class="event__rollup-btn" type="button">

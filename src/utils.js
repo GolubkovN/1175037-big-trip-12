@@ -6,34 +6,32 @@ export const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-// random array index
-export const getRundomIndex = (arr) => {
-  const rundomIndex = getRandomInteger(0, arr.length - 1);
-  return arr[rundomIndex];
+// random array element
+export const getRandomElement = (arr) => arr[getRandomInteger(0, arr.length - 1)];
+
+export const getFormatText = (text) => text.toLowerCase().split(` `).join(`-`);
+
+export const formatTime = (date) => new Date(date).toLocaleString(`en-US`, {month: `short`, day: `2-digit`});
+
+const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`
 };
 
-const addZero = (time) => {
-  return time < 10 ? `0${time}` : time;
+export const createElement = (template) => {
+  const element = document.createElement(`div`);
+  element.innerHTML = template;
+
+  return element.firstChild;
 };
 
-// format time from ms
-export const formatTime = (ms) => {
-  const minutes = ms / 1000 / 60;
-  let days = addZero(Math.floor(minutes / 60 / 24));
-  let hours = addZero(Math.floor(minutes / 60) % 24);
-  let min = addZero(minutes - days * 24 * 60 - hours * 60);
-
-  days = days !== `00` ? `${days}D` : ``;
-  hours = hours !== `00` ? `${hours}H` : ``;
-  min = min !== `00` ? `${min}M` : ``;
-
-  return `${days} ${hours} ${min}`;
-};
-
-export const getDatesDuration = (date1InInt, date2InInt) => {
-  const date1 = new Date(date1InInt);
-  const date2 = new Date(date2InInt);
-  return {
-    daysBetween: date2.getDate() - date1.getDate(),
-  };
+export const renderElement = (container, component, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(component);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(component);
+      break;
+  }
 };
