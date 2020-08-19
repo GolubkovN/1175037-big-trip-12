@@ -9,7 +9,7 @@ import {createPointsTemplate} from './view/trip-points.js';
 import {generatePoint} from './mock/points.js';
 import {createElement, renderElement} from './utils.js';
 
-const POINT_COUNT = 4;
+const POINT_COUNT = 12;
 
 const points = new Array(POINT_COUNT).fill(``).map(generatePoint);
 
@@ -45,7 +45,7 @@ dates.forEach((date, index) => {
   const dayElement = createElement(createDaysItemTemplate(new Date(date), index + 1));
 
   points.filter((point) => new Date(point.timeStart).toDateString() === date).forEach((point) => {
-    renderElement(dayElement.querySelector(`.trip-events__list`), createPointsTemplate(point), `beforeend`);
+    renderElement(dayElement.querySelector(`.trip-events__list`), createElement(createPointsTemplate(point)), `beforeend`);
   });
 
   renderElement(daysListElement, dayElement, `beforeend`);

@@ -15,8 +15,8 @@ const MinuteRange = {
 };
 
 const PriceRange = {
-  MIN: 10,
-  MAX: 50,
+  MIN: 100,
+  MAX: 500,
 };
 
 const PhotosCount = {
@@ -54,6 +54,7 @@ export const generatePoint = () => {
   const durationMinutes = getRandomInteger(MinuteRange.LOWER, MinuteRange.UPPER);
   const timeEnd = new Date(timeStart.getTime());
   timeEnd.setMinutes(timeEnd.getMinutes() + durationMinutes);
+  const duration = Math.round((timeEnd - timeStart) / 60000);
 
   return {
     type: getRandomElement(PATH_TYPE),
@@ -62,6 +63,7 @@ export const generatePoint = () => {
     information: generateInfo(),
     timeStart,
     timeEnd,
-    PointPrice: getRandomInteger(PriceRange.MIN, PriceRange.MAX),
+    duration,
+    pointPrice: getRandomInteger(PriceRange.MIN, PriceRange.MAX),
   };
 };

@@ -1,4 +1,4 @@
-import {getRandomInteger, formatTime} from '../utils.js';
+import {getRandomInteger} from '../utils.js';
 import {OFFERS} from '../const.js';
 
 const CountOffers = {
@@ -27,11 +27,28 @@ const createOfferTemplate = (event) => {
 };
 
 export const createPointsTemplate = (point) => {
-  const {type, destination, timeEnd, timeStart, PointPrice} = point;
-
-  const start = timeStart.toLocaleString().slice(12, 17);
-  const end = timeEnd.toLocaleString().slice(12, 17);
+  const {type, destination, timeEnd, timeStart, duration, pointPrice} = point;
   const offers = createOfferTemplate(point.offers);
+
+  const normalDuration = () => {
+    const hourDuration = Math.floor(duration / 60);
+    const minuteDuration = duration % 60;
+    if (hourDuration >= 1) {
+      return `${hourDuration}H ${minuteDuration}M`;
+    } else {
+      return `${minuteDuration}M`;
+    }
+  };
+
+  const pointZero = (time) => {
+    let pointZeroCheck = ``;
+    if (time.getMinutes() < 10) {
+      pointZeroCheck = `0`;
+    } else {
+      pointZeroCheck = ``;
+    }
+    return pointZeroCheck;
+  };
 
   return (
     `<li class="trip-events__item">
@@ -43,14 +60,14 @@ export const createPointsTemplate = (point) => {
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">${start}</time>
+            <time class="event__start-time" datetime="2019-03-18T10:30">${timeStart.getHours()}:${pointZero(timeStart)}${timeStart.getMinutes()}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">${end}</time>
+            <time class="event__end-time" datetime="2019-03-18T11:00">${timeEnd.getHours()}:${pointZero(timeEnd)}${timeEnd.getMinutes()}</time>
           </p>
-          <p class="event__duration">${formatTime(timeEnd - timeStart)}</p>
+          <p class="event__duration">${normalDuration()}</p>
         </div>
         <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">${PointPrice}</span>
+          &euro;&nbsp;<span class="event__price-value">${pointPrice}</span>
         </p>
 
         <h4 class="visually-hidden">Offers:</h4>
