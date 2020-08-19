@@ -9,6 +9,8 @@ export const getRandomInteger = (a = 0, b = 1) => {
 // random array element
 export const getRandomElement = (arr) => arr[getRandomInteger(0, arr.length - 1)];
 
+export const getBooleanValue = (param) => Boolean(param);
+
 export const getFormatText = (text) => text.toLowerCase().split(` `).join(`-`);
 
 export const formatTime = (date) => new Date(date).toLocaleString(`en-US`, {month: `short`, day: `2-digit`});

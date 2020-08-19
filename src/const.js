@@ -1,4 +1,4 @@
-import {getRandomInteger} from './utils.js';
+import {getRandomInteger, getBooleanValue} from './utils.js';
 
 export const PATH_TYPE = [
   {name: `Taxi`, action: `to`},
@@ -39,51 +39,51 @@ export const OFFERS = [
   {
     title: `Order Uber`,
     price: 20,
-    isChecked: Boolean(getRandomInteger(0, 1))
+    isChecked: getBooleanValue(getRandomInteger(0, 1)),
   },
   {
     title: `Switch to comfort class`,
     price: 100,
-    isChecked: Boolean(getRandomInteger(0, 1))
+    isChecked: getBooleanValue(getRandomInteger(0, 1)),
   },
   {
     title: `Choose seats`,
     price: 5,
-    isChecked: Boolean(getRandomInteger(0, 1))
+    isChecked: getBooleanValue(getRandomInteger(0, 1)),
   },
   {
     title: `Travel by train`,
     price: 40,
-    isChecked: Boolean(getRandomInteger(0, 1))
+    isChecked: getBooleanValue(getRandomInteger(0, 1)),
   },
   {
     title: `Add meal`,
     price: 15,
-    isChecked: Boolean(getRandomInteger(0, 1))
+    isChecked: getBooleanValue(getRandomInteger(0, 1)),
   },
   {
     title: `Add luggage`,
     price: 50,
-    isChecked: Boolean(getRandomInteger(0, 1))
+    isChecked: getBooleanValue(getRandomInteger(0, 1)),
   },
   {
     title: `Rent a car`,
     price: 200,
-    isChecked: Boolean(getRandomInteger(0, 1))
+    isChecked: getBooleanValue(getRandomInteger(0, 1)),
   },
   {
     title: `Add breakfast`,
     price: 50,
-    isChecked: Boolean(getRandomInteger(0, 1))
+    isChecked: getBooleanValue(getRandomInteger(0, 1)),
   },
   {
     title: `Book tickets`,
     price: 40,
-    isChecked: Boolean(getRandomInteger(0, 1))
+    isChecked: getBooleanValue(getRandomInteger(0, 1)),
   },
   {
     title: `Lunch in city`,
     price: 30,
-    isChecked: Boolean(getRandomInteger(0, 1))
+    isChecked: getBooleanValue(getRandomInteger(0, 1)),
   }
 ];

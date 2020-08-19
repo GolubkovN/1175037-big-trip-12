@@ -1,5 +1,4 @@
 import {getRandomInteger, pointZero} from '../utils.js';
-import {OFFERS} from '../const.js';
 
 const CountOffers = {
   MIN: 0,
