@@ -3,12 +3,19 @@ import {createMenuTemplate} from './view/menu.js';
 import {createFilterTemplate} from './view/filter.js';
 import {createSortingTemplate} from './view/sorting.js';
 import {createEditFormTemplate} from './view/form-edit.js';
-import {createEventsDestinationTemplate} from './view/destination.js';
 import {createDaysListTemplate} from './view/days-list.js';
 import {createDaysItemTemplate} from './view/days-item.js';
-import {createDayInfoTemplate} from './view/day-info.js';
 import {createPointsTemplate} from './view/trip-points.js';
+import {generatePoint} from './mock/points.js';
+import {createElement, renderElement} from './utils.js';
 
+const POINT_COUNT = 12;
+
+const points = new Array(POINT_COUNT).fill(``).map(generatePoint);
+
+const dates = [
+  ...new Set(points.map((point) => new Date(point.timeStart).toDateString()))
+];
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -27,25 +34,19 @@ const tripEventsElement = document.querySelector(`.trip-events`);
 render(tripEventsElement, createSortingTemplate(), `afterbegin`);
 
 // form edit
-render(tripEventsElement, createEditFormTemplate(), `beforeend`);
-
-const editFormElement = tripEventsElement.querySelector(`.trip-events__item.event.event--edit`);
-
-const eventDetailsElement = editFormElement.querySelector(`.event__details`);
-render(eventDetailsElement, createEventsDestinationTemplate(), `beforeend`);
+render(tripEventsElement, createEditFormTemplate(points[0]), `beforeend`);
 
 // days list
 render(tripEventsElement, createDaysListTemplate(), `beforeend`);
 
 const daysListElement = tripEventsElement.querySelector(`.trip-days`);
-render(daysListElement, createDaysItemTemplate(), `beforeend`);
 
-const daysItemElement = daysListElement.querySelector(`.trip-days__item `);
-render(daysItemElement, createDayInfoTemplate(), `afterbegin`);
+dates.forEach((date, index) => {
+  const dayElement = createElement(createDaysItemTemplate(new Date(date), index + 1));
 
-const dotsListElement = daysItemElement.querySelector(`.trip-events__list`);
-for (let i = 0; i < 3; i++) {
-  render(dotsListElement, createPointsTemplate(), `beforeend`);
-}
+  points.filter((point) => new Date(point.timeStart).toDateString() === date).forEach((point) => {
+    renderElement(dayElement.querySelector(`.trip-events__list`), createElement(createPointsTemplate(point)), `beforeend`);
+  });
 
-
+  renderElement(daysListElement, dayElement, `beforeend`);
+});
