@@ -1,4 +1,4 @@
-import {getRandomInteger, pointZero} from '../utils.js';
+import {getRandomInteger, addZero, createElement} from '../utils.js';
 
 const CountOffers = {
   MIN: 0,
@@ -23,7 +23,7 @@ const normalDuration = (duration) => {
   return hourDuration >= 1 ? `${hourDuration}H ${minuteDuration}M` : `${minuteDuration}M`;
 };
 
-export const createPointsTemplate = (point) => {
+const createPointsTemplate = (point) => {
   const {type, destination, timeEnd, timeStart, duration, pointPrice} = point;
   const offers = createOfferTemplate(point.offers);
 
@@ -37,9 +37,9 @@ export const createPointsTemplate = (point) => {
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">${pointZero(timeEnd.getHours())}:${pointZero(timeStart.getMinutes())}</time>
+            <time class="event__start-time" datetime="2019-03-18T10:30">${addZero(timeEnd.getHours())}:${addZero(timeStart.getMinutes())}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">${pointZero(timeEnd.getHours())}:${pointZero(timeEnd.getMinutes())}</time>
+            <time class="event__end-time" datetime="2019-03-18T11:00">${addZero(timeEnd.getHours())}:${addZero(timeEnd.getMinutes())}</time>
           </p>
           <p class="event__duration">${normalDuration(duration)}</p>
         </div>
@@ -59,3 +59,26 @@ export const createPointsTemplate = (point) => {
     </li>`
   );
 };
+
+export default class Point {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  _getTemplate() {
+    return createPointsTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this._getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
