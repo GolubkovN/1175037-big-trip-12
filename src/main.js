@@ -1,15 +1,16 @@
-import {createTripInfoTemplate} from './view/trip-info.js';
-import {createMenuTemplate} from './view/menu.js';
-import {createFilterTemplate} from './view/filter.js';
-import {createSortingTemplate} from './view/sorting.js';
-import {createEditFormTemplate} from './view/form-edit.js';
-import {createDaysListTemplate} from './view/days-list.js';
-import {createDaysItemTemplate} from './view/days-item.js';
-import {createPointsTemplate} from './view/trip-points.js';
+import TripInfoView from './view/trip-info.js';
+import MenuView from './view/menu.js';
+import FilterView from './view/filter.js';
+import SortingView from './view/sorting.js';
+import PointEditView from './view/form-edit.js';
+import DaysListView from './view/days-list.js';
+import DayView from './view/days-item.js';
+import PointView from './view/trip-points.js';
 import {generatePoint} from './mock/points.js';
-import {createElement, renderElement} from './utils.js';
+import {renderElement, RenderPosition} from './utils.js';
 
-const POINT_COUNT = 12;
+
+const POINT_COUNT = 3;
 
 const points = new Array(POINT_COUNT).fill(``).map(generatePoint);
 
@@ -17,36 +18,69 @@ const dates = [
   ...new Set(points.map((point) => new Date(point.timeStart).toDateString()))
 ];
 
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
+const renderPoint = (place, point) => {
+  const pointComponent = new PointView(point);
+  const pointEditComponent = new PointEditView(point);
+
+  const replacePointToForm = () => place.replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
+
+  const replaceFormToPoint = () => place.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+
+  const OnEscDown = (evt) => {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      evt.preventDefault();
+      replaceFormToPoint();
+      document.removeEventListener(`keydown`, OnEscDown);
+    }
+  };
+
+  pointComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+    replacePointToForm();
+    document.addEventListener(`keydown`, OnEscDown);
+  });
+
+  pointEditComponent.getElement().addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    replaceFormToPoint();
+    document.addEventListener(`keydown`, OnEscDown);
+  });
+
+  pointEditComponent.getElement().addEventListener(`reset`, (evt) => {
+    evt.preventDefault();
+    replaceFormToPoint();
+    document.addEventListener(`keydown`, OnEscDown);
+  });
+
+  renderElement(place, pointComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
 // header
-const menuElement = document.querySelector(`.trip-main`);
-render(menuElement, createTripInfoTemplate(), `afterBegin`);
+const siteHeaderElement = document.querySelector(`.page-header`);
+const menuElement = siteHeaderElement.querySelector(`.trip-main`);
+renderElement(menuElement, new TripInfoView().getElement(), RenderPosition.AFTERBEGIN);
 
-const controlsElement = document.querySelector(`.trip-main__trip-controls`);
-render(controlsElement, createMenuTemplate(), `afterbegin`);
-render(controlsElement, createFilterTemplate(), `beforeend`);
+const controlsElement = siteHeaderElement.querySelector(`.trip-main__trip-controls`);
+renderElement(controlsElement, new MenuView().getElement(), RenderPosition.AFTERBEGIN);
+renderElement(controlsElement, new FilterView().getElement(), RenderPosition.BEFOREEND);
 
 // sorting
-const tripEventsElement = document.querySelector(`.trip-events`);
-render(tripEventsElement, createSortingTemplate(), `afterbegin`);
+const pageMainElement = document.querySelector(`.page-body__page-main.page-main`);
+const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
+renderElement(tripEventsElement, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
 
 // form edit
-render(tripEventsElement, createEditFormTemplate(points[0]), `beforeend`);
+// render(tripEventsElement, createEditFormTemplate(points[0]), `beforeend`);
 
 // days list
-render(tripEventsElement, createDaysListTemplate(), `beforeend`);
-
-const daysListElement = tripEventsElement.querySelector(`.trip-days`);
+const daysListComponent = new DaysListView();
+renderElement(tripEventsElement, daysListComponent.getElement(), RenderPosition.BEFOREEND);
 
 dates.forEach((date, index) => {
-  const dayElement = createElement(createDaysItemTemplate(new Date(date), index + 1));
+  const dayComponent = new DayView(new Date(date), index + 1);
 
   points.filter((point) => new Date(point.timeStart).toDateString() === date).forEach((point) => {
-    renderElement(dayElement.querySelector(`.trip-events__list`), createElement(createPointsTemplate(point)), `beforeend`);
+    renderPoint(dayComponent.getElement().querySelector(`.trip-events__list`), point);
   });
 
-  renderElement(daysListElement, dayElement, `beforeend`);
+  renderElement(daysListComponent.getElement(), dayComponent.getElement(), RenderPosition.BEFOREEND);
 });

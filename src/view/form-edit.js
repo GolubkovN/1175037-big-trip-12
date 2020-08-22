@@ -1,5 +1,19 @@
 import {PATH_TYPE, DESTINATION} from '../const.js';
-import {humanizeDate} from '../utils.js';
+import {humanizeDate, createElement} from '../utils.js';
+
+const POINT_BLANK = {
+  type: PATH_TYPE[0],
+  destination: DESTINATION[0],
+  offers: ``,
+  information: {
+    description: ``,
+    url: ``,
+  },
+  timeStart: null,
+  timeEnd: null,
+  duration: null,
+  pointPrice: 0,
+};
 
 const createTypesTemplate = (types) => {
   return types.map((type, index) => {
@@ -47,8 +61,7 @@ const createDestinationInfoTemplate = (destination) => {
   `);
 };
 
-
-export const createEditFormTemplate = (point = {}) => {
+const createEditFormTemplate = (point = {}) => {
   const {type, destination, information, offers, pointPrice, timeStart, timeEnd} = point;
 
   return (
@@ -119,3 +132,26 @@ export const createEditFormTemplate = (point = {}) => {
     </form>`
   );
 };
+
+export default class PointEdit {
+  constructor(point = POINT_BLANK) {
+    this._point = point;
+    this._element = null;
+  }
+
+  _getTemplate() {
+    return createEditFormTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this._getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

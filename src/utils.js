@@ -1,4 +1,4 @@
-// random value
+// random number
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -19,29 +19,33 @@ export const humanizeDate = (date) => {
   return date.toLocaleString(`en-GB`, {day: `numeric`, month: `numeric`, year: `2-digit`, hour: `numeric`, minute: `2-digit`});
 };
 
-export const pointZero = (param) => param < 10 ? `0${param}` : `${param}`;
+export const addZero = (param) => param < 10 ? `0${param}` : `${param}`;
 
-const RenderPosition = {
+export const renderTemplate = (container, template, place) => {
+  container.insertAdjacentHTML(place, template);
+};
+
+export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`
 };
 
-export const createElement = (template) => {
-  const element = document.createElement(`div`);
-  element.innerHTML = template;
-
-  return element.firstChild;
-};
-
-export const renderElement = (container, component, place) => {
+export const renderElement = (container, element, place) => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
-      container.prepend(component);
+      container.prepend(element);
       break;
     case RenderPosition.BEFOREEND:
-      container.append(component);
+      container.append(element);
       break;
     default:
       throw new Error(`отсутствиe соответствующего значения RenderPosition`);
   }
+};
+
+export const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
 };
