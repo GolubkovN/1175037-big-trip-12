@@ -1,4 +1,5 @@
-import {getRandomInteger, addZero, createElement} from '../utils.js';
+import {getRandomInteger, addZero} from '../utils.js';
+import AbstractView from './abstract.js';
 
 const CountOffers = {
   MIN: 0,
@@ -60,25 +61,13 @@ const createPointsTemplate = (point) => {
   );
 };
 
-export default class Point {
+export default class Point extends AbstractView {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
   }
 
   _getTemplate() {
     return createPointsTemplate(this._point);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

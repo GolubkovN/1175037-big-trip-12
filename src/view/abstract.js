@@ -1,14 +1,16 @@
-import {createElement} from '../utils.js';
+import {createElement} from "../utils.js";
 
-const createEventsListTemplate = () => `<ul class="trip-events__list"></ul>`;
-
-export default class EventsList {
+export default class Abstract {
   constructor() {
+    if (new.target === Abstract) {
+      throw new Error(`Can't instantiate Abstract, only concrete one.`);
+    }
+
     this._element = null;
   }
 
   _getTemplate() {
-    return createEventsListTemplate();
+    throw new Error(`Abstract method not implemented: getTemplate`);
   }
 
   getElement() {

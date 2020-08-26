@@ -1,5 +1,6 @@
 import {PATH_TYPE, DESTINATION} from '../const.js';
-import {humanizeDate, createElement} from '../utils.js';
+import {humanizeDate} from '../utils.js';
+import AbstractView from './abstract.js';
 
 const POINT_BLANK = {
   type: PATH_TYPE[0],
@@ -133,25 +134,13 @@ const createEditFormTemplate = (point = {}) => {
   );
 };
 
-export default class PointEdit {
+export default class PointEdit extends AbstractView {
   constructor(point = POINT_BLANK) {
+    super();
     this._point = point;
-    this._element = null;
   }
 
   _getTemplate() {
     return createEditFormTemplate(this._point);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
