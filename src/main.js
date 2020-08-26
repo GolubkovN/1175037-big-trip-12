@@ -26,29 +26,29 @@ const renderPoint = (place, point) => {
 
   const replaceFormToPoint = () => place.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
 
-  const OnEscDown = (evt) => {
+  const onEscDown = (evt) => {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
       replaceFormToPoint();
-      document.removeEventListener(`keydown`, OnEscDown);
+      document.removeEventListener(`keydown`, onEscDown);
     }
   };
 
   pointComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
     replacePointToForm();
-    document.addEventListener(`keydown`, OnEscDown);
+    document.addEventListener(`keydown`, onEscDown);
   });
 
   pointEditComponent.getElement().addEventListener(`submit`, (evt) => {
     evt.preventDefault();
     replaceFormToPoint();
-    document.addEventListener(`keydown`, OnEscDown);
+    document.addEventListener(`keydown`, onEscDown);
   });
 
   pointEditComponent.getElement().addEventListener(`reset`, (evt) => {
     evt.preventDefault();
     replaceFormToPoint();
-    document.addEventListener(`keydown`, OnEscDown);
+    document.addEventListener(`keydown`, onEscDown);
   });
 
   renderElement(place, pointComponent.getElement(), RenderPosition.BEFOREEND);
@@ -67,9 +67,6 @@ renderElement(controlsElement, new FilterView().getElement(), RenderPosition.BEF
 const pageMainElement = document.querySelector(`.page-body__page-main.page-main`);
 const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
 renderElement(tripEventsElement, new SortingView().getElement(), RenderPosition.AFTERBEGIN);
-
-// form edit
-// render(tripEventsElement, createEditFormTemplate(points[0]), `beforeend`);
 
 // days list
 const daysListComponent = new DaysListView();
