@@ -40,7 +40,7 @@ const generateInfo = () => ({
 export const generatePoint = () => {
 
   const timeStart = new Date();
-  const daysRange = getRandomInteger(-MAX_DAYS_GAP, MAX_DAYS_GAP);
+  const daysRange = getRandomInteger(0, MAX_DAYS_GAP);
   const currentDay = timeStart.getDate();
   timeStart.setDate(currentDay + daysRange);
   const hoursRange = getRandomInteger(HourRange.LOWER, HourRange.UPPER);
