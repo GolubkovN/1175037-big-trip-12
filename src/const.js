@@ -1,4 +1,4 @@
-import {getRandomInteger, getBooleanValue} from './utils.js';
+import {getRandomInteger, getBooleanValue} from './utils/common.js';
 
 export const PATH_TYPE = [
   {name: `Taxi`, action: `to`},

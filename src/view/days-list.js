@@ -1,4 +1,4 @@
-import AbstractView from './abstract.js';
+import Abstract from './abstract.js';
 
 const createDaysListTemplate = () => {
   return (
@@ -8,7 +8,7 @@ const createDaysListTemplate = () => {
   );
 };
 
-export default class DaysList extends AbstractView {
+export default class DaysList extends Abstract {
   _getTemplate() {
     return createDaysListTemplate();
   }

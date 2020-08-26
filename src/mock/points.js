@@ -1,5 +1,5 @@
 import {PATH_TYPE, DESTINATION, DESCRIPTION, OFFERS} from '../const.js';
-import {getRandomElement, getRandomInteger} from '../utils.js';
+import {getRandomElement, getRandomInteger} from '../utils/common.js';
 
 const MAX_DAYS_GAP = 2;
 

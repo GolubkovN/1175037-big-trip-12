@@ -1,6 +1,6 @@
 import {PATH_TYPE, DESTINATION} from '../const.js';
-import {humanizeDate} from '../utils.js';
-import AbstractView from './abstract.js';
+import {humanizeDate} from '../utils/point.js';
+import Abstract from './abstract.js';
 
 const POINT_BLANK = {
   type: PATH_TYPE[0],
@@ -134,13 +134,36 @@ const createEditFormTemplate = (point = {}) => {
   );
 };
 
-export default class PointEdit extends AbstractView {
+export default class PointEdit extends Abstract {
   constructor(point = POINT_BLANK) {
     super();
     this._point = point;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formResetHandler = this._formResetHandler.bind(this);
   }
 
   _getTemplate() {
     return createEditFormTemplate(this._point);
   }
+
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  }
+
+  _formResetHandler(evt) {
+    evt.preventDefault();
+    this._callback.resetForm();
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  setResetFormHandler(callback) {
+    this._callback.resetForm = callback;
+    this.getElement().addEventListener(`reset`, this._formResetHandler);
+  }
+
 }
