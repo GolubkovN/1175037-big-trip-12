@@ -1,11 +1,7 @@
 import {addZero} from '../utils/point.js';
 import {getRandomInteger} from '../utils/common.js';
+import {CountOffers} from '../const.js';
 import Abstract from './abstract.js';
-
-const CountOffers = {
-  MIN: 0,
-  MAX: 5,
-};
 
 const createOfferTemplate = (offers) => {
   return offers

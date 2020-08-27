@@ -1,5 +1,5 @@
 import {PATH_TYPE, DESTINATION, DESCRIPTION, OFFERS} from '../const.js';
-import {getRandomElement, getRandomInteger} from '../utils/common.js';
+import {getRandomElement, getRandomInteger, getBooleanValue} from '../utils/common.js';
 
 const MAX_DAYS_GAP = 2;
 
@@ -51,10 +51,15 @@ export const generatePoint = () => {
   timeEnd.setMinutes(timeEnd.getMinutes() + durationMinutes);
   const duration = Math.round((timeEnd - timeStart) / 60000);
 
+  const type = getRandomElement(PATH_TYPE);
+
   return {
-    type: getRandomElement(PATH_TYPE),
+    type,
     destination: getRandomElement(DESTINATION),
-    offers: OFFERS,
+    offers: OFFERS.filter((offer) => offer.type === type.name).map((offer) => {
+      offer.isChecked = getBooleanValue();
+      return offer;
+    }),
     information: generateInfo(),
     timeStart,
     timeEnd,

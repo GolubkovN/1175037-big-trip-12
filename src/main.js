@@ -82,8 +82,6 @@ const controlsElement = siteHeaderElement.querySelector(`.trip-main__trip-contro
 render(controlsElement, new MenuView(), RenderPosition.AFTERBEGIN);
 render(controlsElement, new FilterView(), RenderPosition.BEFOREEND);
 
-
-// sorting
 const pageMainElement = document.querySelector(`.page-body__page-main.page-main`);
 const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
 
