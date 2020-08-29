@@ -1,9 +1,7 @@
-import {getRandomInteger, addZero, createElement} from '../utils.js';
-
-const CountOffers = {
-  MIN: 0,
-  MAX: 5,
-};
+import {addZero} from '../utils/point.js';
+import {getRandomInteger} from '../utils/common.js';
+import {CountOffers} from '../const.js';
+import Abstract from './abstract.js';
 
 const createOfferTemplate = (offers) => {
   return offers
@@ -60,25 +58,24 @@ const createPointsTemplate = (point) => {
   );
 };
 
-export default class Point {
+export default class Point extends Abstract {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   _getTemplate() {
     return createPointsTemplate(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-
-    return this._element;
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
   }
 
-  removeElement() {
-    this._element = null;
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
   }
 }

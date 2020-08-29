@@ -1,5 +1,6 @@
 import {PATH_TYPE, DESTINATION} from '../const.js';
-import {humanizeDate, createElement} from '../utils.js';
+import {humanizeDate} from '../utils/point.js';
+import Abstract from './abstract.js';
 
 const POINT_BLANK = {
   type: PATH_TYPE[0],
@@ -31,14 +32,14 @@ const createPointDestinationTemplate = (destinations) => {
 };
 
 const createOfferItemTemplate = (offers) => {
-  return offers.map((offer) => {
+  return offers.map(({title, price, isChecked}) => {
     return (
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.title}-1" type="checkbox" name="event-offer-${offer.title}"${offer.isChecked ? `checked` : ``}>
-        <label class="event__offer-label" for="event-offer-${offer.title}-1">
-          <span class="event__offer-title">${offer.title}</span>
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${title}-1" type="checkbox" name="event-offer-${title}"${isChecked ? `checked` : ``}>
+        <label class="event__offer-label" for="event-offer-${title}-1">
+          <span class="event__offer-title">${title}</span>
           &plus;
-          &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
+          &euro;&nbsp;<span class="event__offer-price">${price}</span>
         </label>
       </div>`
     );
@@ -62,7 +63,7 @@ const createDestinationInfoTemplate = (destination) => {
 };
 
 const createEditFormTemplate = (point = {}) => {
-  const {type, destination, information, offers, pointPrice, timeStart, timeEnd} = point;
+  const {type, destination, information, pointPrice, offers, timeStart, timeEnd} = point;
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -133,25 +134,36 @@ const createEditFormTemplate = (point = {}) => {
   );
 };
 
-export default class PointEdit {
+export default class PointEdit extends Abstract {
   constructor(point = POINT_BLANK) {
+    super();
     this._point = point;
-    this._element = null;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formResetHandler = this._formResetHandler.bind(this);
   }
 
   _getTemplate() {
     return createEditFormTemplate(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-
-    return this._element;
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  _formResetHandler(evt) {
+    evt.preventDefault();
+    this._callback.resetForm();
   }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  setResetFormHandler(callback) {
+    this._callback.resetForm = callback;
+    this.getElement().addEventListener(`reset`, this._formResetHandler);
+  }
+
 }
