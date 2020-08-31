@@ -33,6 +33,12 @@ export const DESCRIPTION = [
   `In rutrum ac purus sit amet tempus.`
 ];
 
+export const SortType = {
+  PRICE: `price`,
+  TIME: `time`,
+  EVENT: `event`,
+};
+
 export const CountOffers = {
   MIN: 0,
   MAX: 5,

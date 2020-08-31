@@ -49,7 +49,7 @@ export const generatePoint = () => {
   const durationMinutes = getRandomInteger(MinuteRange.LOWER, MinuteRange.UPPER);
   const timeEnd = new Date(timeStart.getTime());
   timeEnd.setMinutes(timeEnd.getMinutes() + durationMinutes);
-  const duration = Math.round((timeEnd - timeStart) / 60000);
+  const duration = (timeEnd - timeStart) / 60000;
 
   const type = getRandomElement(PATH_TYPE);
 

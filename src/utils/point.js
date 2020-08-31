@@ -7,4 +7,3 @@ export const humanizeDate = (date) => {
 };
 
 export const addZero = (param) => param < 10 ? `0${param}` : `${param}`;
-

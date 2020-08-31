@@ -1,7 +1,6 @@
 import TripInfoView from './view/trip-info.js';
 import MenuView from './view/menu.js';
 import FilterView from './view/filter.js';
-import SortingView from './view/sorting.js';
 import NoPointsView from './view/no-points.js';
 import TripPresenter from './presenter/trip.js';
 import {generatePoint} from './mock/points.js';
@@ -24,11 +23,8 @@ render(controlsElement, new FilterView(), RenderPosition.BEFOREEND);
 const pageMainElement = document.querySelector(`.page-body__page-main.page-main`);
 const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
 
-const tripPresenter = new TripPresenter(tripEventsElement);
-
 if (points.length === 0) {
   render(tripEventsElement, new NoPointsView(), RenderPosition.BEFOREEND);
 } else {
-  render(tripEventsElement, new SortingView(), RenderPosition.AFTERBEGIN);
-  tripPresenter.init(points);
+  new TripPresenter(tripEventsElement).init(points);
 }
