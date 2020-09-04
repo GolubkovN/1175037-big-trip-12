@@ -86,11 +86,6 @@ export default class Trip {
       document.addEventListener(`keydown`, onEscDown);
     });
 
-    pointEditComponent.setResetFormHandler(() => {
-      replaceFormToPoint();
-      document.addEventListener(`keydown`, onEscDown);
-    });
-
     render(place, pointComponent, RenderPosition.BEFOREEND);
   }
 
