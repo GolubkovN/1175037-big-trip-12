@@ -136,6 +136,7 @@ export default class PointEdit extends Abstract {
     super();
     this._point = point;
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formCloseHandler = this._formCloseHandler.bind(this);
   }
 
   _getTemplate() {
@@ -147,9 +148,14 @@ export default class PointEdit extends Abstract {
     this._callback.formSubmit();
   }
 
-  _formResetHandler(evt) {
-    evt.preventDefault();
-    this._callback.resetForm();
+  _formCloseHandler() {
+    this._callback.formClose();
+  }
+
+  setFormCloseHandler(callback) {
+    this._callback.formClose = callback;
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, this._formCloseHandler);
   }
 
   setFormSubmitHandler(callback) {

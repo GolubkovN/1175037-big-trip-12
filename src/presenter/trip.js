@@ -1,10 +1,9 @@
 import SortingView from '../view/sorting.js';
-import PointEditView from '../view/point-edit.js';
 import DaysListView from '../view/days-list.js';
 import DayView from '../view/days-item.js';
 import EmptyDayView from '../view/empty-day.js';
-import PointView from '../view/trip-points.js';
-import {render, RenderPosition, replace} from '../utils/render.js';
+import PointPresenter from '../presenter/point.js';
+import {render, RenderPosition} from '../utils/render.js';
 import {SortType} from '../const.js';
 
 export default class Trip {
@@ -61,32 +60,8 @@ export default class Trip {
   }
 
   _renderPoint(place, point) {
-    const pointComponent = new PointView(point);
-    const pointEditComponent = new PointEditView(point);
-
-    const replacePointToForm = () => replace(pointEditComponent, pointComponent);
-
-    const replaceFormToPoint = () => replace(pointComponent, pointEditComponent);
-
-    const onEscDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        evt.preventDefault();
-        replaceFormToPoint();
-        document.removeEventListener(`keydown`, onEscDown);
-      }
-    };
-
-    pointComponent.setClickHandler(() => {
-      replacePointToForm();
-      document.addEventListener(`keydown`, onEscDown);
-    });
-
-    pointEditComponent.setFormSubmitHandler(() => {
-      replaceFormToPoint();
-      document.addEventListener(`keydown`, onEscDown);
-    });
-
-    render(place, pointComponent, RenderPosition.BEFOREEND);
+    const pointPresenter = new PointPresenter(place);
+    pointPresenter.init(point);
   }
 
   _renderSortPoints() {
