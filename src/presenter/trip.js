@@ -4,17 +4,20 @@ import DayView from '../view/days-item.js';
 import EmptyDayView from '../view/empty-day.js';
 import PointPresenter from '../presenter/point.js';
 import {render, RenderPosition} from '../utils/render.js';
+import {updateItem} from '../utils/common.js';
 import {SortType} from '../const.js';
 
 export default class Trip {
   constructor(tripContainer) {
     this._tripContainer = tripContainer;
     this._currentSortType = SortType.EVENT;
+    this._pointPresenter = {};
 
     this._daysListComponent = new DaysListView();
     this._sortingComponent = new SortingView();
 
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._handlePointChange = this._handlePointChange.bind(this);
   }
 
   init(points) {
@@ -23,6 +26,12 @@ export default class Trip {
 
     render(this._tripContainer, this._daysListComponent, RenderPosition.BEFOREEND);
     this._renderTrip();
+  }
+
+  _handlePointChange(updatedPoint) {
+    this._points = updateItem(this._points, updatedPoint);
+    this._sourcedPoints = updateItem(this._sourcedPoints, updatedPoint);
+    this._pointPresenter[updatedPoint.id].init(updatedPoint);
   }
 
   _sortPoints(sortType) {
@@ -60,8 +69,9 @@ export default class Trip {
   }
 
   _renderPoint(place, point) {
-    const pointPresenter = new PointPresenter(place);
+    const pointPresenter = new PointPresenter(place, this._handlePointChange);
     pointPresenter.init(point);
+    this._pointPresenter[point.id] = pointPresenter;
   }
 
   _renderSortPoints() {

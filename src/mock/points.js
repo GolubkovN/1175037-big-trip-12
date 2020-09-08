@@ -1,8 +1,8 @@
 import {PATH_TYPE, DESTINATION, DESCRIPTION, OFFERS} from '../const.js';
 import {getRandomElement, getRandomInteger, getBooleanValue} from '../utils/common.js';
+import {generateId} from '../utils/point.js';
 
 const MAX_DAYS_GAP = 2;
-
 
 const HourRange = {
   LOWER: 0,
@@ -54,6 +54,7 @@ export const generatePoint = () => {
   const type = getRandomElement(PATH_TYPE);
 
   return {
+    id: generateId(),
     type,
     destination: getRandomElement(DESTINATION),
     offers: OFFERS.filter((offer) => offer.type === type.name).map((offer) => {

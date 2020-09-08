@@ -7,3 +7,5 @@ export const humanizeDate = (date) => {
 };
 
 export const addZero = (param) => param < 10 ? `0${param}` : `${param}`;
+
+export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
