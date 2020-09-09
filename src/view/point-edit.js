@@ -270,6 +270,8 @@ export default class PointEdit extends Smart {
         name: evt.target.value,
         action: getAction(this),
       },
+      // offers: // Если я в этом хендлере пытаюсь подставлять
+      //       // нужные предложения - это не срабатывает!
     });
   }
 
