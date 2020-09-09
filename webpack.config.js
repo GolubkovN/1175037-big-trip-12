@@ -1,4 +1,4 @@
-const path = require('path'); i
+const path = require('path');
 const MomentLocalesPlugin = require(`moment-locales-webpack-plugin`);
 
 
