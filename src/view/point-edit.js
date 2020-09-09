@@ -257,7 +257,7 @@ export default class PointEdit extends Smart {
   _typeChangeHandler(evt) {
     evt.preventDefault();
     const type = evt.target.value;
-    this.updeteData({
+    this.updateData({
       type: {
         name: type,
         action: getAction(this),
@@ -281,7 +281,7 @@ export default class PointEdit extends Smart {
       this._setDatepickerEnd();
     }
 
-    this.updeteData({
+    this.updateData({
       timeStart: date,
       timeEnd,
     }, true);
@@ -301,7 +301,7 @@ export default class PointEdit extends Smart {
       this._setDatepickerStart();
     }
 
-    this.updeteData({
+    this.updateData({
       timeStart,
       timeEnd: date,
     }, true);
@@ -309,20 +309,20 @@ export default class PointEdit extends Smart {
 
   _inputPriceChangeHandler(evt) {
     evt.preventDefault();
-    this.updeteData({
+    this.updateData({
       pointPrice: evt.target.value,
     }, true);
   }
 
   _destinationChangeHandler(evt) {
     evt.preventDefault();
-    this.updeteData({
+    this.updateData({
       destination: evt.target.value,
     }, true);
   }
 
   _favoriteChangeHandler() {
-    this.updeteData({
+    this.updateData({
       isFavorite: !this._point.isFavorite,
     });
   }
