@@ -1,5 +1,36 @@
+/* eslint-disable no-unused-vars */
 import Abstract from './abstract.js';
 import moment from 'moment';
+
+const getCities = (events) => {
+  let cities = [];
+
+  events.forEach((item) => {
+    cities.push(item.destination);
+  });
+
+  if (cities.length > 3) {
+    return (
+      `${cities[0]} &mdash; ... &mdash; ${cities[cities.length - 1]}`
+    );
+  }
+
+  return cities.join(` &mdash; `);
+};
+
+const getSumPointsPrice = (events) => {
+  let sum = 0;
+
+  events.forEach((item) => {
+    item.offers.forEach((offer) => {
+      sum += +offer.price;
+    });
+
+    sum += +item.pointPrice;
+  });
+
+  return sum;
+};
 
 const createTripInfoTemplate = (events) => {
   let monthStart = ``;
@@ -26,30 +57,14 @@ const createTripInfoTemplate = (events) => {
     return monthEnd + ` `;
   };
 
-  const getCities = () => {
-    let cities = [];
-
-    events.forEach((item) => {
-      cities.push(item.destination);
-    });
-
-    if (cities.length > 3) {
-      return (
-        `${cities[0]} &mdash; ... &mdash; ${cities[cities.length - 1]}`
-      );
-    }
-
-    return cities.join(` &mdash; `);
-  };
-
   return (
     `<section class="trip-main__trip-info  trip-info">
         <div class="trip-info__main">
-          <h1 class="trip-info__title">${getCities()}</h1>
+          <h1 class="trip-info__title">${getCities(events)}</h1>
           <p class="trip-info__dates">${monthStart} ${dayStart}${checkMonth()}${dayEnd}</p>
         </div>
         <p class="trip-info__cost">
-          Total: &euro;&nbsp;<span class="trip-info__cost-value">1230</span>
+          Total: &euro;&nbsp;<span class="trip-info__cost-value">${getSumPointsPrice(events)}</span>
         </p>
       </section>`
   );
