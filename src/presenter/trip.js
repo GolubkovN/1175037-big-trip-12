@@ -18,6 +18,7 @@ export default class Trip {
 
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handlePointChange = this._handlePointChange.bind(this);
+    this._handleChandgeMode = this._handleChandgeMode.bind(this);
   }
 
   init(points) {
@@ -32,6 +33,11 @@ export default class Trip {
     this._points = updateItem(this._points, updatedPoint);
     this._sourcedPoints = updateItem(this._sourcedPoints, updatedPoint);
     this._pointPresenter[updatedPoint.id].init(updatedPoint);
+  }
+
+  _handleChandgeMode() {
+    Object.values(this._pointPresenter)
+      .forEach((presenter) => presenter.resetView());
   }
 
   _sortPoints(sortType) {
@@ -69,7 +75,7 @@ export default class Trip {
   }
 
   _renderPoint(place, point) {
-    const pointPresenter = new PointPresenter(place, this._handlePointChange);
+    const pointPresenter = new PointPresenter(place, this._handlePointChange, this._handleChandgeMode);
     pointPresenter.init(point);
     this._pointPresenter[point.id] = pointPresenter;
   }
