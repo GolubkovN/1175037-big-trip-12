@@ -2,7 +2,7 @@ import {PATH_TYPE, DESTINATION, DESCRIPTION, OFFERS} from '../const.js';
 import {getRandomElement, getRandomInteger, getBooleanValue} from '../utils/common.js';
 import {generateId} from '../utils/point.js';
 
-const MAX_DAYS_GAP = 2;
+const MAX_DAYS_GAP = 7;
 
 const HourRange = {
   LOWER: 0,

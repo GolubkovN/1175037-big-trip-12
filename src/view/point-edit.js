@@ -1,4 +1,4 @@
-import {PATH_TYPE, DESTINATION} from '../const.js';
+import {PATH_TYPE, DESTINATION, OFFERS} from '../const.js';
 import {humanizeDate} from '../utils/point.js';
 import {getAction} from '../utils/common.js';
 import Smart from './smart.js';
@@ -167,12 +167,12 @@ export default class PointEdit extends Smart {
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formCloseHandler = this._formCloseHandler.bind(this);
-    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._inputPriceChangeHandler = this._inputPriceChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._timeStartChangeHandler = this._timeStartChangeHandler.bind(this);
     this._timeEndChangeHandler = this._timeEndChangeHandler.bind(this);
+    this._favoriteChangeHandler = this._favoriteChangeHandler.bind(this);
 
     this._setInnerHandlers();
     this._setDatepickerStart();
@@ -196,6 +196,8 @@ export default class PointEdit extends Smart {
       .addEventListener(`input`, this._inputPriceChangeHandler);
     this.getElement().querySelector(`.event__type-list`)
       .addEventListener(`change`, this._typeChangeHandler);
+    this.getElement().querySelector(`.event__favorite-btn`)
+      .addEventListener(`click`, this._favoriteChangeHandler);
   }
 
   _setDatepickerStart() {
@@ -241,17 +243,6 @@ export default class PointEdit extends Smart {
     this._callback.formClose();
   }
 
-  _favoriteClickHandler() {
-    this._callback.favoritClick();
-  }
-
-  setFavoriteClickHandler(callback) {
-    this._callback.favoritClick = callback;
-    this.getElement()
-      .querySelector(`.event__favorite-btn`)
-      .addEventListener(`click`, this._favoriteClickHandler);
-  }
-
   setFormCloseHandler(callback) {
     this._callback.formClose = callback;
     this.getElement().querySelector(`.event__rollup-btn`)
@@ -265,13 +256,14 @@ export default class PointEdit extends Smart {
 
   _typeChangeHandler(evt) {
     evt.preventDefault();
+    const type = evt.target.value;
     this.updeteData({
       type: {
-        name: evt.target.value,
+        name: type,
         action: getAction(this),
       },
-      // offers: // Если я в этом хендлере пытаюсь подставлять
-      //       // нужные предложения - это не срабатывает!
+      offers: OFFERS
+        .filter((offer) => offer.type === type).map((offer) => offer),
     });
   }
 
@@ -327,5 +319,11 @@ export default class PointEdit extends Smart {
     this.updeteData({
       destination: evt.target.value,
     }, true);
+  }
+
+  _favoriteChangeHandler() {
+    this.updeteData({
+      isFavorite: !this._point.isFavorite,
+    });
   }
 }
