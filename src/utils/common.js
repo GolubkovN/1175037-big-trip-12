@@ -1,3 +1,5 @@
+import {PATH_TYPE} from '../const.js';
+
 // random number
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -21,11 +23,7 @@ export const updateItem = (items, update) => {
   return [...items.slice(0, index), update, ...items.slice(index + 1)];
 };
 
-export const getAction = (obj) => {
-  if (obj.name === `Check-in` || obj.name === `Sightseeing` || obj.name === `Restaurant`) {
-    return `in`;
-  }
-
-  return `to`;
+export const getType = (name) => {
+  return PATH_TYPE.find((item) => item.name === name);
 };
 

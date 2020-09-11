@@ -1,8 +1,9 @@
-import {PATH_TYPE, DESTINATION, DESCRIPTION, OFFERS} from '../const.js';
+import {PATH_TYPE, DESTINATION, DESCRIPTION} from '../const.js';
 import {getRandomElement, getRandomInteger, getBooleanValue} from '../utils/common.js';
-import {generateId} from '../utils/point.js';
+import {generateId, filterOffers} from '../utils/point.js';
 
 const MAX_DAYS_GAP = 7;
+const MILLISECONDS_IN_MINUTE = 60000;
 
 const HourRange = {
   LOWER: 0,
@@ -49,7 +50,7 @@ export const generatePoint = () => {
   const durationMinutes = getRandomInteger(MinuteRange.LOWER, MinuteRange.UPPER);
   const timeEnd = new Date(timeStart.getTime());
   timeEnd.setMinutes(timeEnd.getMinutes() + durationMinutes);
-  const duration = (timeEnd - timeStart) / 60000;
+  const duration = (timeEnd - timeStart) / MILLISECONDS_IN_MINUTE;
 
   const type = getRandomElement(PATH_TYPE);
 
@@ -57,7 +58,7 @@ export const generatePoint = () => {
     id: generateId(),
     type,
     destination: getRandomElement(DESTINATION),
-    offers: OFFERS.filter((offer) => offer.type === type.name).map((offer) => {
+    offers: filterOffers(type.name).map((offer) => {
       offer.isChecked = getBooleanValue();
       return offer;
     }),

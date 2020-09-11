@@ -52,9 +52,7 @@ export default class Sorting extends Abstract {
       return;
     }
 
-    evt.preventDefault();
     this._callback.sortTypeChange(evt.target.dataset.sortType);
-    evt.target.parentElement.querySelector(`input`).checked = true;
   }
 
   setSortTypeChangeHandler(callback) {

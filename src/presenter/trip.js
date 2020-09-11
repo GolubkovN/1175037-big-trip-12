@@ -43,10 +43,10 @@ export default class Trip {
   _sortPoints(sortType) {
     switch (sortType) {
       case SortType.TIME:
-        this._points.sort((a, b) => a.duration < b.duration ? 1 : -1);
+        this._points.sort((a, b) => b.duration - a.duration);
         break;
       case SortType.PRICE:
-        this._points.sort((a, b) => a.pointPrice < b.pointPrice ? 1 : -1);
+        this._points.sort((a, b) => b.pointPrice - a.pointPrice);
         break;
       default:
         this._points = this._sourcedPoints.slice();
@@ -81,13 +81,13 @@ export default class Trip {
   }
 
   _renderSortPoints() {
-    const EmptyDayComponent = new EmptyDayView();
-
+    const emptyDayComponent = new EmptyDayView();
+    const eventsList = emptyDayComponent.getElement().querySelector(`.trip-events__list`);
     this._points
       .forEach((point) => {
-        this._renderPoint(EmptyDayComponent.getElement().querySelector(`.trip-events__list`), point);
+        this._renderPoint(eventsList, point);
       });
-    render(this._daysListComponent, EmptyDayComponent, RenderPosition.BEFOREEND);
+    render(this._daysListComponent, emptyDayComponent, RenderPosition.BEFOREEND);
   }
 
   _renderDays() {
@@ -97,11 +97,12 @@ export default class Trip {
 
     dates.forEach((date, index) => {
       const dayComponent = new DayView(new Date(date), index + 1);
+      const eventsList = dayComponent.getElement().querySelector(`.trip-events__list`);
 
       this._points
       .filter((point) => new Date(point.timeStart).toDateString() === date)
       .forEach((point) => {
-        this._renderPoint(dayComponent.getElement().querySelector(`.trip-events__list`), point);
+        this._renderPoint(eventsList, point);
       });
 
       render(this._daysListComponent, dayComponent, RenderPosition.BEFOREEND);

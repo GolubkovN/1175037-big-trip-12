@@ -1,67 +1,52 @@
-/* eslint-disable no-unused-vars */
 import Abstract from './abstract.js';
 import moment from 'moment';
 
+const POINT_COUNT_FOR_ROUT = 3;
+
 const getCities = (events) => {
-  let cities = [];
+  const cities = events.map(({destination}) => destination);
 
-  events.forEach((item) => {
-    cities.push(item.destination);
-  });
-
-  if (cities.length > 3) {
-    return (
-      `${cities[0]} &mdash; ... &mdash; ${cities[cities.length - 1]}`
-    );
-  }
-
-  return cities.join(` &mdash; `);
+  return cities.length > POINT_COUNT_FOR_ROUT
+    ? `${cities[0]} &mdash; ... &mdash; ${cities[cities.length - 1]}`
+    : cities.join(` &mdash; `);
 };
 
 const getSumPointsPrice = (events) => {
-  let sum = 0;
+  const checkedOffers = [];
+  events
+    .map(({offers}) => offers
+    .map((offer) => offer.isChecked
+      ? checkedOffers.push(offer)
+      : ``));
 
-  events.forEach((item) => {
-    item.offers.forEach((offer) => {
-      sum += +offer.price;
-    });
+  const offersSum = checkedOffers.reduce((total, offer) => total + offer.price, 0);
+  const pointsSum = events.reduce((total, point) => total + point.pointPrice, 0);
 
-    sum += +item.pointPrice;
-  });
+  return offersSum + pointsSum;
+};
 
-  return sum;
+const getEventsPeriod = (events) => {
+  if (events.length) {
+    const startDate = events[0].timeStart;
+    const endDate = events[events.length - 1].timeEnd;
+    const monthStart = moment(startDate).format(`MMM`);
+    const monthEnd = moment(endDate).format(`MMM`);
+
+    const dayStart = startDate.getDate() + `&nbsp;&mdash;&nbsp;`;
+    const dayEnd = endDate.getDate();
+
+    const separator = monthStart === monthEnd ? `` : monthEnd + ` `;
+    return `${monthStart} ${dayStart}${separator}${dayEnd}`;
+  }
+  return ``;
 };
 
 const createTripInfoTemplate = (events) => {
-  let monthStart = ``;
-  let monthEnd = ``;
-  let dayStart = ``;
-  let dayEnd = ``;
-  let checkMonth = () => ``;
-
-  if (events.length) {
-    const startDate = new Date(events[0].timeStart);
-    const endDate = new Date(events[events.length - 1].timeEnd);
-    monthStart = moment(startDate).format(`MMM`);
-    monthEnd = moment(endDate).format(`MMM`);
-
-    dayStart = startDate.getDate() + `&nbsp;&mdash;&nbsp;`;
-    dayEnd = endDate.getDate();
-  }
-
-  checkMonth = () => {
-    if (monthStart === monthEnd) {
-      return ``;
-    }
-
-    return monthEnd + ` `;
-  };
-
   return (
     `<section class="trip-main__trip-info  trip-info">
         <div class="trip-info__main">
           <h1 class="trip-info__title">${getCities(events)}</h1>
-          <p class="trip-info__dates">${monthStart} ${dayStart}${checkMonth()}${dayEnd}</p>
+          <p class="trip-info__dates">${getEventsPeriod(events)}</p>
         </div>
         <p class="trip-info__cost">
           Total: &euro;&nbsp;<span class="trip-info__cost-value">${getSumPointsPrice(events)}</span>

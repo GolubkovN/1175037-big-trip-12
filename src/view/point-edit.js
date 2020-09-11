@@ -1,6 +1,6 @@
-import {PATH_TYPE, DESTINATION, OFFERS} from '../const.js';
-import {humanizeDate} from '../utils/point.js';
-import {getAction} from '../utils/common.js';
+import {PATH_TYPE, DESTINATION} from '../const.js';
+import {humanizeDate, filterOffers} from '../utils/point.js';
+import {getType} from '../utils/common.js';
 import Smart from './smart.js';
 import moment from 'moment';
 import flatpickr from 'flatpickr';
@@ -256,46 +256,41 @@ export default class PointEdit extends Smart {
 
   _typeChangeHandler(evt) {
     evt.preventDefault();
-    const type = evt.target.value;
+    const name = evt.target.value;
+
     this.updateData({
-      type: {
-        name: type,
-        action: getAction(this),
-      },
-      offers: OFFERS
-        .filter((offer) => offer.type === type).map((offer) => offer),
+      type: getType(name),
+      offers: filterOffers(name),
     });
   }
 
   _timeStartChangeHandler([userDate]) {
-    const date = userDate;
     let timeEnd = this._point.timeEnd;
 
     if (userDate > timeEnd) {
       const timeEndElement = this.getElement()
         .querySelector(`input[name="event-end-time"]`);
 
-      timeEnd = date;
+      timeEnd = userDate;
       timeEndElement.value = moment(timeEnd).format(`DD-MM-YY HH:mm`);
 
       this._setDatepickerEnd();
     }
 
     this.updateData({
-      timeStart: date,
+      timeStart: userDate,
       timeEnd,
     }, true);
   }
 
   _timeEndChangeHandler([userDate]) {
-    const date = userDate;
     let timeStart = this._point.timeStart;
 
     if (userDate < timeStart) {
       const timeStartElement = this.getElement()
         .querySelector(`input[name="event-start-time"]`);
 
-      timeStart = date;
+      timeStart = userDate;
       timeStartElement.value = moment(timeStart).format(`DD-MM-YY HH:mm`);
 
       this._setDatepickerStart();
@@ -303,7 +298,7 @@ export default class PointEdit extends Smart {
 
     this.updateData({
       timeStart,
-      timeEnd: date,
+      timeEnd: userDate,
     }, true);
   }
 

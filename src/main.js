@@ -8,12 +8,12 @@ import {render, RenderPosition} from './utils/render.js';
 
 const POINT_COUNT = 15;
 
-const points = new Array(POINT_COUNT).fill(``).map(generatePoint).sort((a, b) => a.timeStart > b.timeStart ? 1 : -1);
+const points = new Array(POINT_COUNT).fill(``).map(generatePoint).sort((a, b) => a.timeStart - b.timeStart);
 
 // header
 const siteHeaderElement = document.querySelector(`.page-header`);
 const menuElement = siteHeaderElement.querySelector(`.trip-main`);
-const tripInfoComponent = new TripInfoView(points);
+const tripInfoComponent = new TripInfoView(points, points);
 render(menuElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
 
 const controlsElement = siteHeaderElement.querySelector(`.trip-main__trip-controls`);
