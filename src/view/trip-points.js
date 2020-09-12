@@ -1,5 +1,5 @@
-import {addZero} from '../utils/point.js';
 import {getRandomInteger} from '../utils/common.js';
+import {addZero} from '../utils/point.js';
 import {CountOffers} from '../const.js';
 import Abstract from './abstract.js';
 
@@ -35,7 +35,7 @@ const createPointsTemplate = (point) => {
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">${addZero(timeEnd.getHours())}:${addZero(timeStart.getMinutes())}</time>
+            <time class="event__start-time" datetime="2019-03-18T10:30">${addZero(timeStart.getHours())}:${addZero(timeStart.getMinutes())}</time>
             &mdash;
             <time class="event__end-time" datetime="2019-03-18T11:00">${addZero(timeEnd.getHours())}:${addZero(timeEnd.getMinutes())}</time>
           </p>
