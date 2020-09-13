@@ -3,6 +3,7 @@ import MenuView from './view/menu.js';
 import FilterView from './view/filter.js';
 import NoPointsView from './view/no-points.js';
 import TripPresenter from './presenter/trip.js';
+import PointsModel from './model/points.js';
 import {generatePoint} from './mock/points.js';
 import {render, RenderPosition} from './utils/render.js';
 
@@ -22,9 +23,11 @@ render(controlsElement, new FilterView(), RenderPosition.BEFOREEND);
 
 const pageMainElement = document.querySelector(`.page-body__page-main.page-main`);
 const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
+const pointModel = new PointsModel();
+pointModel.setPoints(points);
 
 if (points.length === 0) {
   render(tripEventsElement, new NoPointsView(), RenderPosition.BEFOREEND);
 } else {
-  new TripPresenter(tripEventsElement).init(points);
+  new TripPresenter(tripEventsElement, pointModel).init();
 }
