@@ -2,8 +2,6 @@ import moment from 'moment';
 import {OFFERS} from '../const';
 import Abstract from '../view/abstract.js';
 
-export const getFormatText = (text) => text.toLowerCase().split(` `).join(`-`);
-
 export const humanizeDate = (date) => moment(date).format(`DD-MM-YY HH:mm`);
 
 

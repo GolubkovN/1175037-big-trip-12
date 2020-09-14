@@ -189,6 +189,17 @@ export default class PointEdit extends Smart {
     this.setFormSubmitHandler(this._callback.formSubmit);
   }
 
+  setFormCloseHandler(callback) {
+    this._callback.formClose = callback;
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, this._formCloseHandler);
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
+  }
+
   _setInnerHandlers() {
     this.getElement().querySelector(`.event__input--destination`)
       .addEventListener(`input`, this._destinationChangeHandler);
@@ -241,17 +252,6 @@ export default class PointEdit extends Smart {
 
   _formCloseHandler() {
     this._callback.formClose();
-  }
-
-  setFormCloseHandler(callback) {
-    this._callback.formClose = callback;
-    this.getElement().querySelector(`.event__rollup-btn`)
-      .addEventListener(`click`, this._formCloseHandler);
-  }
-
-  setFormSubmitHandler(callback) {
-    this._callback.formSubmit = callback;
-    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
   }
 
   _typeChangeHandler(evt) {
