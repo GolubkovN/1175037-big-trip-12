@@ -51,7 +51,6 @@ export const generatePoint = () => {
   const timeEnd = new Date(timeStart.getTime());
   timeEnd.setMinutes(timeEnd.getMinutes() + durationMinutes);
   const duration = (timeEnd - timeStart) / MILLISECONDS_IN_MINUTE;
-
   const type = getRandomElement(PATH_TYPE);
 
   return {
