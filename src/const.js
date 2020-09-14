@@ -1,3 +1,21 @@
+export const UserAction = {
+  UPDATE_TASK: `UPDATE_POINT`,
+  ADD_TASK: `ADD_POINT`,
+  DELETE_TASK: `DELETE_POINT`
+};
+
+export const UpdateType = {
+  PATCH: `PATCH`,
+  MINOR: `MINOR`,
+  MAJOR: `MAJOR`
+};
+
+export const FilterType = {
+  EVERYTHING: `EVERYTHING`,
+  FUTURE: `FUTURE`,
+  PAST: `PAST`
+};
+
 export const PATH_TYPE = [
   {name: `Taxi`, action: `to`},
   {name: `Bus`, action: `to`},

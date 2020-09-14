@@ -3,8 +3,9 @@ import DaysListView from '../view/days-list.js';
 import DayView from '../view/days-item.js';
 import EmptyDayView from '../view/empty-day.js';
 import PointPresenter from '../presenter/point.js';
-import {render, RenderPosition} from '../utils/render.js';
-import {SortType} from '../const.js';
+import NoPointsView from '../view/no-points.js';
+import {render, RenderPosition, remove} from '../utils/render.js';
+import {SortType, UpdateType, UserAction} from '../const.js';
 
 export default class Trip {
   constructor(tripContainer, pointModel) {
@@ -13,12 +14,17 @@ export default class Trip {
     this._currentSortType = SortType.EVENT;
     this._pointPresenter = {};
 
+    this._sortingComponent = null;
+
     this._daysListComponent = new DaysListView();
-    this._sortingComponent = new SortingView();
+    this._noPointsComponent = new NoPointsView();
 
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-    this._handlePointChange = this._handlePointChange.bind(this);
-    this._handleChandgeMode = this._handleChandgeMode.bind(this);
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+    this._handleChangeMode = this._handleChangeMode.bind(this);
+
+    this._pointModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -37,12 +43,37 @@ export default class Trip {
     return this._pointModel.getPoints();
   }
 
-  _handlePointChange(updatedPoint) {
-    // заменим на другой метод
-    this._pointPresenter[updatedPoint.id].init(updatedPoint);
+  _handleViewAction(actionType, updateType, updatedPoint) {
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this._pointModel.updatePoint(updateType, updatedPoint);
+        break;
+      case UserAction.ADD_POINT:
+        this._pointModel.addPoint(updateType, updatedPoint);
+        break;
+      case UserAction.DELETE_POINT:
+        this._pointModel.deletePoint(updateType, updatedPoint);
+        break;
+    }
   }
 
-  _handleChandgeMode() {
+  _handleModelEvent(updateType, data) {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this._pointPresenter[data.id].init(data);
+        break;
+      case UpdateType.MINOR:
+        this._clearTrip();
+        this._renderTrip();
+        break;
+      case UpdateType.MAJOR:
+        this._clearTrip({resetSortType: true});
+        this._renderTrip();
+        break;
+    }
+  }
+
+  _handleChangeMode() {
     Object.values(this._pointPresenter)
       .forEach((presenter) => presenter.resetView());
   }
@@ -53,21 +84,22 @@ export default class Trip {
     }
 
     this._currentSortType = sortType;
-    this._clearDaysList();
-    if (this._currentSortType === SortType.TIME || this._currentSortType === SortType.PRICE) {
-      this._renderSortPoints();
-    } else {
-      this._renderDays();
-    }
+    this._clearTrip();
+    this._renderTrip();
   }
 
   _renderSort() {
-    render(this._tripContainer, this._sortingComponent, RenderPosition.AFTERBEGIN);
+    if (this._sortingComponent !== null) {
+      this._sortingComponent = null;
+    }
+
+    this._sortingComponent = new SortingView(this._currentSortType);
     this._sortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+    render(this._tripContainer, this._sortingComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderPoint(place, point) {
-    const pointPresenter = new PointPresenter(place, this._handlePointChange, this._handleChandgeMode);
+    const pointPresenter = new PointPresenter(place, this._handleViewAction, this._handleChangeMode);
     pointPresenter.init(point);
     this._pointPresenter[point.id] = pointPresenter;
   }
@@ -80,6 +112,10 @@ export default class Trip {
         this._renderPoint(eventsList, point);
       });
     render(this._daysListComponent, emptyDayComponent, RenderPosition.BEFOREEND);
+  }
+
+  _renderNoPoints() {
+    render(this._tripContainer, this._noPointsComponent, RenderPosition.BEFOREEND);
   }
 
   _renderDays() {
@@ -101,12 +137,29 @@ export default class Trip {
     });
   }
 
-  _clearDaysList() {
-    this._daysListComponent.getElement().innerHTML = ``;
+  _clearTrip({resetSortType} = {}) {
+    Object.values(this._pointPresenter)
+          .forEach((presenter) => presenter.destroy());
+    this._pointPresenter = {};
+    this._daysListComponent.clear();
+    remove(this._sortingComponent);
+    remove(this._noPointsComponent);
+
+    if (resetSortType) {
+      this._currentSortType = SortType.EVENT;
+    }
   }
 
   _renderTrip() {
-    this._renderSort();
-    this._renderDays();
+    if (this._getPoints().length === 0) {
+      this._renderNoPoints();
+    } else {
+      this._renderSort();
+      if (this._currentSortType === SortType.TIME || this._currentSortType === SortType.PRICE) {
+        this._renderSortPoints();
+      } else {
+        this._renderDays();
+      }
+    }
   }
 }
