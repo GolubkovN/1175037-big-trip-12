@@ -1,28 +1,21 @@
-import {getRandomInteger} from '../utils/common.js';
-import {addZero} from '../utils/point.js';
+import {addZero, normalDuration} from '../utils/point.js';
 import {CountOffers} from '../const.js';
 import Abstract from './abstract.js';
 
 const createOfferTemplate = (offers) => {
   return offers
-    .filter((it) => it.isChecked === true)
-    .slice(0, getRandomInteger(CountOffers.MIN, CountOffers.MAX))
-    .map((it) =>
+    .filter(({isChecked}) => isChecked)
+   .slice(CountOffers.MIN, CountOffers.MAX)
+    .map(({price, title}) =>
       `<li class="event__offer">
-        <span class="event__offer-title">${it.title}</span>
+        <span class="event__offer-title">${title}</span>
           &plus;
-          &euro;&nbsp;<span class="event__offer-price">${it.price}</span>
+          &euro;&nbsp;<span class="event__offer-price">${price}</span>
        </li>`).join(``);
 };
 
-const normalDuration = (duration) => {
-  const hourDuration = Math.floor(duration / 60);
-  const minuteDuration = duration % 60;
-  return hourDuration >= 1 ? `${hourDuration}H ${minuteDuration}M` : `${minuteDuration}M`;
-};
-
 const createPointsTemplate = (point) => {
-  const {type, destination, timeEnd, timeStart, duration, pointPrice} = point;
+  const {type, destination, timeEnd, timeStart, pointPrice} = point;
   const offers = createOfferTemplate(point.offers);
 
   return (
@@ -39,7 +32,7 @@ const createPointsTemplate = (point) => {
             &mdash;
             <time class="event__end-time" datetime="2019-03-18T11:00">${addZero(timeEnd.getHours())}:${addZero(timeEnd.getMinutes())}</time>
           </p>
-          <p class="event__duration">${normalDuration(duration)}</p>
+          <p class="event__duration">${normalDuration(timeStart, timeEnd)}</p>
         </div>
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${pointPrice}</span>

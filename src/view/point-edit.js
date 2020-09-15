@@ -41,7 +41,7 @@ const createOfferItemTemplate = (offers) => {
   return offers.map(({title, price, isChecked}) => {
     return (
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${title}-1" type="checkbox" name="event-offer-${title}"${isChecked ? `checked` : ``}>
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${title}-1" type="checkbox" name="${title}" ${isChecked ? `checked` : ``}>
         <label class="event__offer-label" for="event-offer-${title}-1">
           <span class="event__offer-title">${title}</span>
           &plus;
@@ -173,6 +173,7 @@ export default class PointEdit extends Smart {
     this._timeStartChangeHandler = this._timeStartChangeHandler.bind(this);
     this._timeEndChangeHandler = this._timeEndChangeHandler.bind(this);
     this._favoriteChangeHandler = this._favoriteChangeHandler.bind(this);
+    this._offerChangeHandler = this._offerChangeHandler.bind(this);
 
     this._setInnerHandlers();
     this._setDatepickerStart();
@@ -181,6 +182,21 @@ export default class PointEdit extends Smart {
 
   _getTemplate() {
     return createEditFormTemplate(this._point);
+  }
+
+  reset(point) {
+    this.updateData(point);
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepickerStart || this._datepickerEnd) {
+      this._datepickerStart.destroy();
+      this._datepickerEnd.destroy();
+      this._datepickerStart = null;
+      this._datepickerEnd = null;
+    }
   }
 
   restoreHandlers() {
@@ -209,6 +225,10 @@ export default class PointEdit extends Smart {
       .addEventListener(`change`, this._typeChangeHandler);
     this.getElement().querySelector(`.event__favorite-btn`)
       .addEventListener(`click`, this._favoriteChangeHandler);
+    this.getElement().querySelectorAll(`.event__offer-checkbox`)
+      .forEach((item) => {
+        item.addEventListener(`change`, this._offerChangeHandler);
+      });
   }
 
   _setDatepickerStart() {
@@ -314,6 +334,17 @@ export default class PointEdit extends Smart {
     this.updateData({
       destination: evt.target.value,
     }, true);
+  }
+
+  _offerChangeHandler(evt) {
+    const offersCopy = this._point.offers.slice();
+
+    const index = this._point.offers.findIndex((offer) => offer.title === evt.target.name);
+    offersCopy[index] = Object.assign({}, offersCopy[index], {isChecked: !offersCopy[index].isChecked});
+
+    this.updateData({
+      offers: offersCopy
+    });
   }
 
   _favoriteChangeHandler() {

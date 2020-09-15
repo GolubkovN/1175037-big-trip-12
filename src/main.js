@@ -24,6 +24,7 @@ const pageMainElement = document.querySelector(`.page-body__page-main.page-main`
 const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
 
 const filterModel = new FilterModel();
+// filterModel.addObserver();
 const pointModel = new PointsModel();
 pointModel.setPoints(points);
 new TripPresenter(tripEventsElement, pointModel, filterModel).init();

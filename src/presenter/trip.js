@@ -32,6 +32,7 @@ export default class Trip {
 
   init() {
     render(this._tripContainer, this._daysListComponent, RenderPosition.BEFOREEND);
+    this._renderSort();
     this._renderTrip();
   }
 
@@ -90,7 +91,7 @@ export default class Trip {
     }
 
     this._currentSortType = sortType;
-    this._clearTrip();
+    this._clearTrip({removeSort: false});
     this._renderTrip();
   }
 
@@ -143,12 +144,15 @@ export default class Trip {
     });
   }
 
-  _clearTrip({resetSortType} = {}) {
+  _clearTrip({resetSortType, removeSort} = {}) {
     Object.values(this._pointPresenter)
           .forEach((presenter) => presenter.destroy());
     this._pointPresenter = {};
     this._daysListComponent.clear();
-    remove(this._sortingComponent);
+    if (removeSort) {
+      remove(this._sortingComponent);
+    }
+
     remove(this._noPointsComponent);
 
     if (resetSortType) {
@@ -160,7 +164,6 @@ export default class Trip {
     if (this._getPoints().length === 0) {
       this._renderNoPoints();
     } else {
-      this._renderSort();
       if (this._currentSortType === SortType.TIME || this._currentSortType === SortType.PRICE) {
         this._renderSortPoints();
       } else {
