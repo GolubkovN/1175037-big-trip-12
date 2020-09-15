@@ -33,7 +33,9 @@ export default class Trip {
   init() {
     render(this._tripContainer, this._daysListComponent, RenderPosition.BEFOREEND);
     this._renderSort();
-    this._renderTrip();
+    if (this._getPoints().length > 0) {
+      this._renderTrip();
+    }
   }
 
   _getPoints() {
@@ -50,16 +52,16 @@ export default class Trip {
     return filteredPoints;
   }
 
-  _handleViewAction(actionType, updateType, updatedPoint) {
+  _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._pointModel.updatePoint(updateType, updatedPoint);
+        this._pointModel.updatePoint(updateType, update);
         break;
       case UserAction.ADD_POINT:
-        this._pointModel.addPoint(updateType, updatedPoint);
+        this._pointModel.addPoint(updateType, update);
         break;
       case UserAction.DELETE_POINT:
-        this._pointModel.deletePoint(updateType, updatedPoint);
+        this._pointModel.deletePoint(updateType, update);
         break;
     }
   }
@@ -74,8 +76,8 @@ export default class Trip {
         this._renderTrip();
         break;
       case UpdateType.MAJOR:
-        this._clearTrip({resetSortType: true});
-        this._renderTrip();
+        this._clearTrip({resetSortType: true, removeSort: true});
+        this._renderTrip({renderSort: true});
         break;
     }
   }
@@ -149,6 +151,7 @@ export default class Trip {
           .forEach((presenter) => presenter.destroy());
     this._pointPresenter = {};
     this._daysListComponent.clear();
+
     if (removeSort) {
       remove(this._sortingComponent);
     }
@@ -160,10 +163,15 @@ export default class Trip {
     }
   }
 
-  _renderTrip() {
+  _renderTrip({renderSort} = {}) {
     if (this._getPoints().length === 0) {
       this._renderNoPoints();
     } else {
+
+      if (renderSort) {
+        this._renderSort();
+      }
+
       if (this._currentSortType === SortType.TIME || this._currentSortType === SortType.PRICE) {
         this._renderSortPoints();
       } else {

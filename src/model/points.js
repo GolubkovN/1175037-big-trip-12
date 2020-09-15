@@ -36,14 +36,14 @@ export default class Points extends Observer {
     this._notify(updateType, addedItem);
   }
 
-  deletePoint(updateType, deletedItem) {
-    const index = this._points.findIndex((point) => point.id === deletedItem.id);
+  deletePoint(updateType, update) {
+    const index = this._points.findIndex((point) => point.id === update.id);
 
     if (index === -1) {
       throw new Error(`Can't delete unexisting point!`);
     }
 
-    this._point = [...this._points.slice(0, index), ...this._points.slice(index + 1)];
+    this._points = [...this._points.slice(0, index), ...this._points.slice(index + 1)];
 
     this._notify(updateType);
   }

@@ -174,6 +174,7 @@ export default class PointEdit extends Smart {
     this._timeEndChangeHandler = this._timeEndChangeHandler.bind(this);
     this._favoriteChangeHandler = this._favoriteChangeHandler.bind(this);
     this._offerChangeHandler = this._offerChangeHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
 
     this._setInnerHandlers();
     this._setDatepickerStart();
@@ -201,8 +202,11 @@ export default class PointEdit extends Smart {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setDatepickerStart();
+    this._setDatepickerEnd();
     this.setFormCloseHandler(this._callback.formClose);
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   setFormCloseHandler(callback) {
@@ -214,6 +218,12 @@ export default class PointEdit extends Smart {
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector(`.event__reset-btn`)
+      .addEventListener(`click`, this._formDeleteClickHandler);
   }
 
   _setInnerHandlers() {
@@ -338,9 +348,12 @@ export default class PointEdit extends Smart {
 
   _offerChangeHandler(evt) {
     const offersCopy = this._point.offers.slice();
-
-    const index = this._point.offers.findIndex((offer) => offer.title === evt.target.name);
-    offersCopy[index] = Object.assign({}, offersCopy[index], {isChecked: !offersCopy[index].isChecked});
+    const {offers} = this._point;
+    const index = offers.findIndex(({title}) => title === evt.target.name);
+    offersCopy[index] = Object.assign(
+        {},
+        offersCopy[index],
+        {isChecked: !offersCopy[index].isChecked});
 
     this.updateData({
       offers: offersCopy
@@ -351,5 +364,10 @@ export default class PointEdit extends Smart {
     this.updateData({
       isFavorite: !this._point.isFavorite,
     });
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(this._point);
   }
 }

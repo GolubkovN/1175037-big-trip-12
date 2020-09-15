@@ -1,6 +1,7 @@
-import {addZero, normalDuration} from '../utils/point.js';
+import {normalDuration} from '../utils/point.js';
 import {CountOffers} from '../const.js';
 import Abstract from './abstract.js';
+import moment from 'moment';
 
 const createOfferTemplate = (offers) => {
   return offers
@@ -28,9 +29,9 @@ const createPointsTemplate = (point) => {
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">${addZero(timeStart.getHours())}:${addZero(timeStart.getMinutes())}</time>
+            <time class="event__start-time" datetime="2019-03-18T10:30">${moment(timeStart).format(`HH:mm`)}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">${addZero(timeEnd.getHours())}:${addZero(timeEnd.getMinutes())}</time>
+            <time class="event__end-time" datetime="2019-03-18T11:00">${moment(timeEnd).format(`HH:mm`)}</time>
           </p>
           <p class="event__duration">${normalDuration(timeStart, timeEnd)}</p>
         </div>
