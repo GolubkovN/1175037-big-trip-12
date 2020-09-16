@@ -1,6 +1,7 @@
 import {PATH_TYPE, DESTINATION} from '../const.js';
 import {humanizeDate, filterOffers} from '../utils/point.js';
 import {getType} from '../utils/common.js';
+import {generatePoint} from '../mock/points.js';
 import Smart from './smart.js';
 import moment from 'moment';
 import flatpickr from 'flatpickr';
@@ -8,19 +9,7 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import '../../node_modules/flatpickr/dist/themes/material_blue.css';
 
-const POINT_BLANK = {
-  type: PATH_TYPE[0],
-  destination: DESTINATION[0],
-  offers: ``,
-  information: {
-    description: ``,
-    url: ``,
-  },
-  timeStart: null,
-  timeEnd: null,
-  duration: null,
-  pointPrice: 0,
-};
+const POINT_BLANK = generatePoint();
 
 const createTypesTemplate = (types) => {
   return types.map((type) => {
@@ -353,7 +342,8 @@ export default class PointEdit extends Smart {
     offersCopy[index] = Object.assign(
         {},
         offersCopy[index],
-        {isChecked: !offersCopy[index].isChecked});
+        {isChecked: !offersCopy[index].isChecked}
+    );
 
     this.updateData({
       offers: offersCopy

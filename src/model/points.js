@@ -32,6 +32,7 @@ export default class Points extends Observer {
 
   addPoint(updateType, addedItem) {
     this._points = [addedItem, ...this._points];
+    this._points.sort((a, b) => a.timeStart - b.timeStart);
 
     this._notify(updateType, addedItem);
   }
