@@ -10,7 +10,8 @@ export const renderTemplate = (container, template, place) => {
 
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`
+  BEFOREEND: `beforeend`,
+  BEFOREBEGIN: `beforbegin`,
 };
 
 export const render = (container, element, place) => {
@@ -28,6 +29,9 @@ export const render = (container, element, place) => {
       break;
     case RenderPosition.BEFOREEND:
       container.append(element);
+      break;
+    case RenderPosition.BEFOREBEGIN:
+      container.before(element);
       break;
     default:
       throw new Error(`отсутствиe соответствующего значения RenderPosition`);

@@ -24,7 +24,7 @@ export default class NewEvent {
     this._newPointComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._newPointComponent.setDeleteClickHandler(this._handleDeleteClick);
 
-    render(this._pointsContainer, this._newPointComponent, RenderPosition.AFTERBEGIN);
+    render(this._pointsContainer, this._newPointComponent, RenderPosition.BEFOREBEGIN);
     document.addEventListener(`keydown`, this._onEscKeyDownHandler);
   }
 

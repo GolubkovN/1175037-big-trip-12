@@ -65,7 +65,7 @@ const createEditFormTemplate = (point = {}) => {
   const {type, destination, information, pointPrice, offers, timeStart, timeEnd, isFavorite} = point;
 
   return (
-    `<form class="event  event--edit" action="#" method="post">
+    `<form class="event  event--edit trip-events__item" action="#" method="post">
         <header class="event__header">
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
