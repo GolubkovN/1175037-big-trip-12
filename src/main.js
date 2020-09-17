@@ -1,5 +1,6 @@
 import TripInfoView from './view/trip-info.js';
 import MenuView from './view/menu.js';
+import NewEvenetButtonView from './view/new-event-button.js';
 import FilterPresenter from './presenter/filter.js';
 import TripPresenter from './presenter/trip.js';
 import PointsModel from './model/points.js';
@@ -20,6 +21,10 @@ render(menuElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
 const controlsElement = siteHeaderElement.querySelector(`.trip-main__trip-controls`);
 render(controlsElement, new MenuView(), RenderPosition.AFTERBEGIN);
 
+const tripMainElement = document.querySelector(`.trip-main`);
+const addPointButtonComponent = new NewEvenetButtonView();
+render(tripMainElement, addPointButtonComponent, RenderPosition.BEFOREEND);
+
 const pageMainElement = document.querySelector(`.page-body__page-main.page-main`);
 const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
 
@@ -30,8 +35,9 @@ pointModel.setPoints(points);
 tripPresenter.init();
 new FilterPresenter(controlsElement, filterModel, pointModel).init();
 
-document.querySelector(`.trip-main__event-add-btn`)
-  .addEventListener(`click`, (evt) => {
-    evt.preventDefault();
-    tripPresenter.createPoint();
-  });
+const handleAddClick = () => {
+  tripPresenter.createPoint();
+};
+
+addPointButtonComponent.setAddClickHandler(handleAddClick);
+

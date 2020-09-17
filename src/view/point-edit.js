@@ -114,7 +114,7 @@ const createEditFormTemplate = (point = {}) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${pointPrice}">
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${pointPrice}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -158,7 +158,6 @@ export default class PointEdit extends Smart {
     this._formCloseHandler = this._formCloseHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._inputPriceChangeHandler = this._inputPriceChangeHandler.bind(this);
-    this._inputPriceOnlyNumber = this._inputPriceOnlyNumber.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._timeStartChangeHandler = this._timeStartChangeHandler.bind(this);
     this._timeEndChangeHandler = this._timeEndChangeHandler.bind(this);
@@ -221,8 +220,6 @@ export default class PointEdit extends Smart {
       .addEventListener(`input`, this._destinationChangeHandler);
     this.getElement().querySelector(`.event__input--price`)
       .addEventListener(`input`, this._inputPriceChangeHandler);
-    this.getElement().querySelector(`.event__input--price`)
-      .addEventListener(`keyup`, this._inputPriceOnlyNumber);
     this.getElement().querySelector(`.event__type-list`)
       .addEventListener(`change`, this._typeChangeHandler);
     this.getElement().querySelector(`.event__favorite-btn`)
@@ -329,10 +326,6 @@ export default class PointEdit extends Smart {
     this.updateData({
       pointPrice: evt.target.value,
     }, true);
-  }
-
-  _inputPriceOnlyNumber(evt) {
-    evt.target.value = evt.target.value.replace(/[^\d]/g, ``);
   }
 
   _destinationChangeHandler(evt) {
