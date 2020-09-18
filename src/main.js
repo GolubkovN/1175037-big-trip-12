@@ -30,13 +30,14 @@ const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
 
 const filterModel = new FilterModel();
 const pointModel = new PointsModel();
-const tripPresenter = new TripPresenter(tripEventsElement, pointModel, filterModel);
+const tripPresenter = new TripPresenter(tripEventsElement, pointModel, filterModel, addPointButtonComponent);
 pointModel.setPoints(points);
 tripPresenter.init();
 new FilterPresenter(controlsElement, filterModel, pointModel).init();
 
 const handleAddClick = () => {
   tripPresenter.createPoint();
+  addPointButtonComponent.getElement().disabled = true;
 };
 
 addPointButtonComponent.setAddClickHandler(handleAddClick);

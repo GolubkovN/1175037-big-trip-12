@@ -10,7 +10,7 @@ import {filter} from '../utils/filter.js';
 import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
 
 export default class Trip {
-  constructor(tripContainer, pointModel, filterModel) {
+  constructor(tripContainer, pointModel, filterModel, newEventButton) {
     this._pointModel = pointModel;
     this._filterModel = filterModel;
     this._tripContainer = tripContainer;
@@ -31,7 +31,7 @@ export default class Trip {
     this._pointModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
 
-    this._newPointPresenter = new NewEventPresenter(this._daysListComponent, this._handleViewAction);
+    this._newPointPresenter = new NewEventPresenter(this._daysListComponent, this._handleViewAction, newEventButton);
   }
 
   init() {

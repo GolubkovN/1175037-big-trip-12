@@ -4,8 +4,9 @@ import {remove, render, RenderPosition} from '../utils/render.js';
 import {UserAction, UpdateType} from '../const.js';
 
 export default class NewEvent {
-  constructor(pointsContainer, changeData) {
+  constructor(pointsContainer, changeData, newEventButton) {
     this._pointsContainer = pointsContainer;
+    this._newEventButton = newEventButton;
     this._changeData = changeData;
 
     this._newPointComponent = null;
@@ -37,6 +38,7 @@ export default class NewEvent {
 
     remove(this._newPointComponent);
     this._newPointComponent = null;
+    this._newEventButton.getElement().disabled = false;
     document.removeEventListener(`keydown`, this._onEscKeyDownHandler);
   }
 
