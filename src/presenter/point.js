@@ -2,7 +2,6 @@ import PointEditView from '../view/point-edit.js';
 import PointView from '../view/trip-points.js';
 import {render, RenderPosition, replace, remove} from '../utils/render.js';
 import {UserAction, UpdateType} from '../const.js';
-import {isDatesEqual} from '../utils/point.js';
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -94,10 +93,9 @@ export default class Point {
   }
 
   _handleFormSubmit(update) {
-    const isMinorUpdate = isDatesEqual(this._point.timeStart, update.timeStart);
     this._changeData(
         UserAction.UPDATE_POINT,
-        isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+        UpdateType.MINOR,
         update
     );
     this._replaceFormToPoint();
