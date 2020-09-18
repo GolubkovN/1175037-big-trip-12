@@ -1,6 +1,8 @@
 import PointEditView from '../view/point-edit.js';
 import PointView from '../view/trip-points.js';
 import {render, RenderPosition, replace, remove} from '../utils/render.js';
+import {UserAction, UpdateType} from '../const.js';
+import {isDatesEqual} from '../utils/point.js';
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -21,6 +23,7 @@ export default class Point {
     this._handleFormClose = this._handleFormClose.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
   init(point) {
@@ -35,6 +38,7 @@ export default class Point {
     this._pointComponent.setClickHandler(this._handleEditClick);
     this._pointEditComponent.setFormCloseHandler(this._handleFormClose);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
+    this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this._pointContainer, this._pointComponent, RenderPosition.BEFOREEND);
@@ -80,6 +84,7 @@ export default class Point {
   _escKeyDownHandler(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
+      this._pointEditComponent.reset(this._point);
       this._replaceFormToPoint();
     }
   }
@@ -88,12 +93,26 @@ export default class Point {
     this._replacePointToForm();
   }
 
-  _handleFormSubmit(point) {
+  _handleFormSubmit(update) {
+    const isMinorUpdate = isDatesEqual(this._point.timeStart, update.timeStart);
+    this._changeData(
+        UserAction.UPDATE_POINT,
+        isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+        update
+    );
     this._replaceFormToPoint();
-    this._changeData(point);
   }
 
   _handleFormClose() {
+    this._pointEditComponent.reset(this._point);
     this._replaceFormToPoint();
+  }
+
+  _handleDeleteClick(point) {
+    this._changeData(
+        UserAction.DELETE_POINT,
+        UpdateType.MINOR,
+        point
+    );
   }
 }

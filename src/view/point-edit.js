@@ -1,6 +1,7 @@
 import {PATH_TYPE, DESTINATION} from '../const.js';
 import {humanizeDate, filterOffers} from '../utils/point.js';
 import {getType} from '../utils/common.js';
+import {generatePoint} from '../mock/points.js';
 import Smart from './smart.js';
 import moment from 'moment';
 import flatpickr from 'flatpickr';
@@ -8,19 +9,7 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import '../../node_modules/flatpickr/dist/themes/material_blue.css';
 
-const POINT_BLANK = {
-  type: PATH_TYPE[0],
-  destination: DESTINATION[0],
-  offers: ``,
-  information: {
-    description: ``,
-    url: ``,
-  },
-  timeStart: null,
-  timeEnd: null,
-  duration: null,
-  pointPrice: 0,
-};
+const POINT_BLANK = generatePoint();
 
 const createTypesTemplate = (types) => {
   return types.map((type) => {
@@ -41,7 +30,7 @@ const createOfferItemTemplate = (offers) => {
   return offers.map(({title, price, isChecked}) => {
     return (
       `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${title}-1" type="checkbox" name="event-offer-${title}"${isChecked ? `checked` : ``}>
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${title}-1" type="checkbox" name="${title}" ${isChecked ? `checked` : ``}>
         <label class="event__offer-label" for="event-offer-${title}-1">
           <span class="event__offer-title">${title}</span>
           &plus;
@@ -76,7 +65,7 @@ const createEditFormTemplate = (point = {}) => {
   const {type, destination, information, pointPrice, offers, timeStart, timeEnd, isFavorite} = point;
 
   return (
-    `<form class="event  event--edit" action="#" method="post">
+    `<form class="event  event--edit trip-events__item" action="#" method="post">
         <header class="event__header">
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -125,7 +114,7 @@ const createEditFormTemplate = (point = {}) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${pointPrice}">
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${pointPrice}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -173,6 +162,8 @@ export default class PointEdit extends Smart {
     this._timeStartChangeHandler = this._timeStartChangeHandler.bind(this);
     this._timeEndChangeHandler = this._timeEndChangeHandler.bind(this);
     this._favoriteChangeHandler = this._favoriteChangeHandler.bind(this);
+    this._offerChangeHandler = this._offerChangeHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
 
     this._setInnerHandlers();
     this._setDatepickerStart();
@@ -183,10 +174,45 @@ export default class PointEdit extends Smart {
     return createEditFormTemplate(this._point);
   }
 
+  reset(point) {
+    this.updateData(point);
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepickerStart || this._datepickerEnd) {
+      this._datepickerStart.destroy();
+      this._datepickerEnd.destroy();
+      this._datepickerStart = null;
+      this._datepickerEnd = null;
+    }
+  }
+
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setDatepickerStart();
+    this._setDatepickerEnd();
     this.setFormCloseHandler(this._callback.formClose);
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
+  }
+
+  setFormCloseHandler(callback) {
+    this._callback.formClose = callback;
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, this._formCloseHandler);
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector(`.event__reset-btn`)
+      .addEventListener(`click`, this._formDeleteClickHandler);
   }
 
   _setInnerHandlers() {
@@ -198,6 +224,10 @@ export default class PointEdit extends Smart {
       .addEventListener(`change`, this._typeChangeHandler);
     this.getElement().querySelector(`.event__favorite-btn`)
       .addEventListener(`click`, this._favoriteChangeHandler);
+    this.getElement().querySelectorAll(`.event__offer-checkbox`)
+      .forEach((item) => {
+        item.addEventListener(`change`, this._offerChangeHandler);
+      });
   }
 
   _setDatepickerStart() {
@@ -241,17 +271,6 @@ export default class PointEdit extends Smart {
 
   _formCloseHandler() {
     this._callback.formClose();
-  }
-
-  setFormCloseHandler(callback) {
-    this._callback.formClose = callback;
-    this.getElement().querySelector(`.event__rollup-btn`)
-      .addEventListener(`click`, this._formCloseHandler);
-  }
-
-  setFormSubmitHandler(callback) {
-    this._callback.formSubmit = callback;
-    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
   }
 
   _typeChangeHandler(evt) {
@@ -316,9 +335,29 @@ export default class PointEdit extends Smart {
     }, true);
   }
 
+  _offerChangeHandler(evt) {
+    const offersCopy = this._point.offers.slice();
+    const {offers} = this._point;
+    const index = offers.findIndex(({title}) => title === evt.target.name);
+    offersCopy[index] = Object.assign(
+        {},
+        offersCopy[index],
+        {isChecked: !offersCopy[index].isChecked}
+    );
+
+    this.updateData({
+      offers: offersCopy
+    });
+  }
+
   _favoriteChangeHandler() {
     this.updateData({
       isFavorite: !this._point.isFavorite,
     });
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(this._point);
   }
 }

@@ -3,11 +3,10 @@ import {getRandomElement, getRandomInteger, getBooleanValue} from '../utils/comm
 import {generateId, filterOffers} from '../utils/point.js';
 
 const MAX_DAYS_GAP = 7;
-const MILLISECONDS_IN_MINUTE = 60000;
 
 const HourRange = {
   LOWER: 0,
-  UPPER: 23,
+  UPPER: 24,
 };
 
 const MinuteRange = {
@@ -50,8 +49,6 @@ export const generatePoint = () => {
   const durationMinutes = getRandomInteger(MinuteRange.LOWER, MinuteRange.UPPER);
   const timeEnd = new Date(timeStart.getTime());
   timeEnd.setMinutes(timeEnd.getMinutes() + durationMinutes);
-  const duration = (timeEnd - timeStart) / MILLISECONDS_IN_MINUTE;
-
   const type = getRandomElement(PATH_TYPE);
 
   return {
@@ -65,7 +62,6 @@ export const generatePoint = () => {
     information: generateInfo(),
     timeStart,
     timeEnd,
-    duration,
     pointPrice: getRandomInteger(PriceRange.MIN, PriceRange.MAX),
   };
 };
