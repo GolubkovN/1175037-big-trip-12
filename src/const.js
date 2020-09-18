@@ -1,3 +1,9 @@
+export const StatsType = {
+  MONEY: `MONEY`,
+  TRANSPORT: `TRANSPORT`,
+  TIME_SPEND: `TIME_SPEND`,
+};
+
 export const UserAction = {
   UPDATE_POINT: `UPDATE_POINT`,
   ADD_POINT: `ADD_POINT`,
