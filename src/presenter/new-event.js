@@ -12,6 +12,7 @@ export default class NewEvent {
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
+    this._handleCloseClick = this._handleCloseClick.bind(this);
     this._onEscKeyDownHandler = this._onEscKeyDownHandler.bind(this);
   }
 
@@ -23,6 +24,7 @@ export default class NewEvent {
     this._newPointComponent = new PointEditView();
     this._newPointComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._newPointComponent.setDeleteClickHandler(this._handleDeleteClick);
+    this._newPointComponent.setFormCloseHandler(this._handleCloseClick);
 
     render(this._pointsContainer, this._newPointComponent, RenderPosition.BEFOREBEGIN);
     document.addEventListener(`keydown`, this._onEscKeyDownHandler);
@@ -48,6 +50,10 @@ export default class NewEvent {
   }
 
   _handleDeleteClick() {
+    this.destroy();
+  }
+
+  _handleCloseClick() {
     this.destroy();
   }
 

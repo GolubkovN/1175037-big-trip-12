@@ -7,6 +7,14 @@ export default class NewEvenetButton extends Abstract {
     this._addClickHandler = this._addClickHandler.bind(this);
   }
 
+  disable() {
+    this.getElement().setAttribute(`disabled`, `disabled`);
+  }
+
+  enable() {
+    this.getElement().removeAttribute(`disabled`);
+  }
+
   setAddClickHandler(callback) {
     this._callback.addClick = callback;
     this.getElement().addEventListener(`click`, this._addClickHandler);
