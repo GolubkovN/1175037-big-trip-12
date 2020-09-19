@@ -30,26 +30,27 @@ export default class Trip {
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleChangeMode = this._handleChangeMode.bind(this);
 
+    this._pointModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+
     this._newPointPresenter = new NewEventPresenter(this._daysListComponent, this._handleViewAction, newEventButton);
   }
 
   init() {
     render(this._tripContainer, this._daysListComponent, RenderPosition.BEFOREEND);
-    this._pointModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
-
-    this._renderSort();
 
     if (this._getPoints().length > 0) {
-      this._renderTrip({renderSort: false});
+      this._renderTrip({renderSort: true});
     }
+  }
+
+  rerenderTrip() {
+    this.destroy();
+    this.init();
   }
 
   destroy() {
     this._clearTrip({removeSort: true});
-
-    this._pointModel.removeObserver(this._handleModelEvent);
-    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   createPoint() {

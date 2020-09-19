@@ -54,14 +54,18 @@ addPointButtonComponent.setAddClickHandler(handleAddClick);
 const handleMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.TABLE:
-      menuComponent.setMenuItem(menuItem);
-      tripPresenter.clearStats();
-      tripPresenter.init();
+      if (menuComponent.getActiveMenuItem() !== MenuItem.TABLE) {
+        menuComponent.setMenuItem(menuItem);
+        tripPresenter.clearStats();
+        tripPresenter.rerenderTrip();
+      }
       break;
     case MenuItem.STATS:
-      menuComponent.setMenuItem(menuItem);
-      tripPresenter.destroy();
-      tripPresenter.renderStats();
+      if (menuComponent.getActiveMenuItem() !== MenuItem.STATS) {
+        menuComponent.setMenuItem(menuItem);
+        tripPresenter.destroy();
+        tripPresenter.renderStats();
+      }
       break;
   }
 };

@@ -49,6 +49,7 @@ export const generatePoint = () => {
   const durationMinutes = getRandomInteger(MinuteRange.LOWER, MinuteRange.UPPER);
   const timeEnd = new Date(timeStart.getTime());
   timeEnd.setMinutes(timeEnd.getMinutes() + durationMinutes);
+  const duration = (timeEnd - timeStart) / 60000;
   const type = getRandomElement(PATH_TYPE);
 
   return {
@@ -62,6 +63,7 @@ export const generatePoint = () => {
     information: generateInfo(),
     timeStart,
     timeEnd,
+    duration,
     pointPrice: getRandomInteger(PriceRange.MIN, PriceRange.MAX),
   };
 };

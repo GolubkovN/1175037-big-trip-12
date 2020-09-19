@@ -13,7 +13,7 @@ const createMenuTemplate = () => {
 export default class Menu extends Abstract {
   constructor() {
     super();
-
+    this._activeMenuItem = MenuItem.TABLE;
     this._menuClickHandler = this._menuClickHandler.bind(this);
   }
 
@@ -35,18 +35,22 @@ export default class Menu extends Abstract {
   setMenuItem(menuItem) {
     const tableItem = this.getElement().querySelector(`#${MenuItem.TABLE}`);
     const statsItem = this.getElement().querySelector(`#${MenuItem.STATS}`);
-    const item = this.getElement().querySelector(`#${menuItem}`);
+    this._activeMenuItem = menuItem;
     const activeClass = `trip-tabs__btn--active`;
 
-    switch (item) {
+    switch (this._activeMenuItem) {
       case tableItem:
-        item.classList.add(activeClass);
+        this._activeMenuItem.classList.add(activeClass);
         statsItem.classList.remove(activeClass);
         break;
       case statsItem:
         tableItem.classList.remove(activeClass);
-        item.classList.add(activeClass);
+        this._activeMenuItem.classList.add(activeClass);
         break;
     }
+  }
+
+  getActiveMenuItem() {
+    return this._activeMenuItem;
   }
 }
