@@ -3,11 +3,12 @@ import DaysListView from '../view/days-list.js';
 import DayView from '../view/days-item.js';
 import EmptyDayView from '../view/empty-day.js';
 import NoPointsView from '../view/no-points.js';
+import StatsView from '../view/stat.js';
 import PointPresenter from '../presenter/point.js';
 import NewEventPresenter from '../presenter/new-event.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
 import {filter} from '../utils/filter.js';
-import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
+import {SortType, UpdateType, UserAction} from '../const.js';
 
 export default class Trip {
   constructor(tripContainer, pointModel, filterModel, newEventButton) {
@@ -19,6 +20,7 @@ export default class Trip {
     this._pointPresenter = {};
 
     this._sortingComponent = null;
+    this._statsComponent = null;
 
     this._daysListComponent = new DaysListView();
     this._noPointsComponent = new NoPointsView();
@@ -28,24 +30,39 @@ export default class Trip {
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleChangeMode = this._handleChangeMode.bind(this);
 
-    this._pointModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
-
     this._newPointPresenter = new NewEventPresenter(this._daysListComponent, this._handleViewAction, newEventButton);
   }
 
   init() {
     render(this._tripContainer, this._daysListComponent, RenderPosition.BEFOREEND);
+    this._pointModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+
     this._renderSort();
+
     if (this._getPoints().length > 0) {
-      this._renderTrip();
+      this._renderTrip({renderSort: false});
     }
   }
 
+  destroy() {
+    this._clearTrip({removeSort: true});
+
+    this._pointModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
+  }
+
   createPoint() {
-    this._currentSortType = SortType.EVENT;
-    this._filterModel.set(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._newPointPresenter.init();
+  }
+
+  renderStats() {
+    this._statsComponent = new StatsView(this._pointModel.getPoints());
+    render(this._tripContainer, this._statsComponent, RenderPosition.BEFOREEND);
+  }
+
+  clearStats() {
+    remove(this._statsComponent);
   }
 
   _getPoints() {

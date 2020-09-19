@@ -7,10 +7,16 @@ import PointsModel from './model/points.js';
 import FilterModel from './model/filter.js';
 import {generatePoint} from './mock/points.js';
 import {render, RenderPosition} from './utils/render.js';
+import {MenuItem} from './const.js';
 
 const POINT_COUNT = 10;
 
 const points = new Array(POINT_COUNT).fill(``).map(generatePoint).sort((a, b) => a.timeStart - b.timeStart);
+
+
+// Model
+const filterModel = new FilterModel();
+const pointModel = new PointsModel();
 
 // header
 const siteHeaderElement = document.querySelector(`.page-header`);
@@ -18,18 +24,20 @@ const menuElement = siteHeaderElement.querySelector(`.trip-main`);
 const tripInfoComponent = new TripInfoView(points);
 render(menuElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
 
+// Menu
+const menuComponent = new MenuView();
 const controlsElement = siteHeaderElement.querySelector(`.trip-main__trip-controls`);
-render(controlsElement, new MenuView(), RenderPosition.AFTERBEGIN);
+render(controlsElement, menuComponent, RenderPosition.AFTERBEGIN);
 
+// button
 const tripMainElement = document.querySelector(`.trip-main`);
 const addPointButtonComponent = new NewEvenetButtonView();
 render(tripMainElement, addPointButtonComponent, RenderPosition.BEFOREEND);
 
+// main content
 const pageMainElement = document.querySelector(`.page-body__page-main.page-main`);
 const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
 
-const filterModel = new FilterModel();
-const pointModel = new PointsModel();
 const tripPresenter = new TripPresenter(tripEventsElement, pointModel, filterModel, addPointButtonComponent);
 pointModel.setPoints(points);
 tripPresenter.init();
@@ -42,3 +50,20 @@ const handleAddClick = () => {
 
 addPointButtonComponent.setAddClickHandler(handleAddClick);
 
+// change screen
+const handleMenuClick = (menuItem) => {
+  switch (menuItem) {
+    case MenuItem.TABLE:
+      menuComponent.setMenuItem(menuItem);
+      tripPresenter.clearStats();
+      tripPresenter.init();
+      break;
+    case MenuItem.STATS:
+      menuComponent.setMenuItem(menuItem);
+      tripPresenter.destroy();
+      tripPresenter.renderStats();
+      break;
+  }
+};
+
+menuComponent.setMenuClickHandler(handleMenuClick);

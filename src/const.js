@@ -1,3 +1,8 @@
+export const MenuItem = {
+  TABLE: `TABLE`,
+  STATS: `STATS`,
+};
+
 export const StatsType = {
   MONEY: `MONEY`,
   TRANSPORT: `TRANSPORT`,

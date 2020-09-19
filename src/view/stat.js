@@ -26,7 +26,7 @@ export default class Stats extends SmartView {
     this._data = points;
   }
 
-  getTemplate() {
+  _getTemplate() {
     return createStatisticsTemplate(StatsType);
   }
 }
