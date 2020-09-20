@@ -8,11 +8,11 @@ export default class NewEvenetButton extends Abstract {
   }
 
   disable() {
-    this.getElement().setAttribute(`disabled`, `disabled`);
+    this.getElement().disabled = true;
   }
 
   enable() {
-    this.getElement().removeAttribute(`disabled`);
+    this.getElement().disabled = false;
   }
 
   setAddClickHandler(callback) {
@@ -20,7 +20,7 @@ export default class NewEvenetButton extends Abstract {
     this.getElement().addEventListener(`click`, this._addClickHandler);
   }
 
-  _getTemplate() {
+  getTemplate() {
     return `<button class="trip-main__event-add-btn  btn  btn--big  btn--yellow" type="button">New event</button>`;
   }
 

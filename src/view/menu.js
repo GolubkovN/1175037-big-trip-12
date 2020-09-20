@@ -17,7 +17,7 @@ export default class Menu extends Abstract {
     this._menuClickHandler = this._menuClickHandler.bind(this);
   }
 
-  _getTemplate() {
+  getTemplate() {
     return createMenuTemplate();
   }
 

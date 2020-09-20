@@ -59,7 +59,7 @@ export default class Point extends Abstract {
     this._clickHandler = this._clickHandler.bind(this);
   }
 
-  _getTemplate() {
+  getTemplate() {
     return createPointsTemplate(this._point);
   }
 

@@ -20,7 +20,7 @@ export default class Day extends Abstract {
     this._number = number;
   }
 
-  _getTemplate() {
+  getTemplate() {
     return createDaysItemTemplate(this._date, this._number);
   }
 }

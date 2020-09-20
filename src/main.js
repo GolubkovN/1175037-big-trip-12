@@ -45,7 +45,7 @@ new FilterPresenter(controlsElement, filterModel, pointModel).init();
 
 const handleAddClick = () => {
   tripPresenter.createPoint();
-  addPointButtonComponent.getElement().disabled = true;
+  addPointButtonComponent.disable();
 };
 
 addPointButtonComponent.setAddClickHandler(handleAddClick);

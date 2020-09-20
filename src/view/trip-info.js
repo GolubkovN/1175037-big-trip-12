@@ -9,7 +9,7 @@ export default class TripInfo extends Abstract {
     this._events = events;
   }
 
-  _getTemplate() {
+  getTemplate() {
     return `<section class="trip-main__trip-info  trip-info">
               <div class="trip-info__main">
                 <h1 class="trip-info__title">${this._getCities(this._events)}</h1>

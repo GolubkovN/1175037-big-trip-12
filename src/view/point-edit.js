@@ -170,7 +170,7 @@ export default class PointEdit extends Smart {
     this._setDatepickerEnd();
   }
 
-  _getTemplate() {
+  getTemplate() {
     return createEditFormTemplate(this._point);
   }
 

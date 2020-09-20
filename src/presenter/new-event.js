@@ -38,7 +38,7 @@ export default class NewEvent {
 
     remove(this._newPointComponent);
     this._newPointComponent = null;
-    this._newEventButton.getElement().disabled = false;
+    this._newEventButton.enable();
     document.removeEventListener(`keydown`, this._onEscKeyDownHandler);
   }
 

@@ -43,7 +43,7 @@ export default class Sorting extends Abstract {
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
   }
 
-  _getTemplate() {
+  getTemplate() {
     return createSortingTemplate();
   }
 

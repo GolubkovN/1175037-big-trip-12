@@ -1,3 +1,5 @@
+export const BAR_HEIGHT = 55;
+
 export const MenuItem = {
   TABLE: `TABLE`,
   STATS: `STATS`,
@@ -38,6 +40,16 @@ export const PATH_TYPE = [
   {name: `Sightseeing`, action: `in`},
   {name: `Restaurant`, action: `in`},
 ];
+
+export const Transports = {
+  TAXI: `taxi`,
+  BUS: `bus`,
+  SHIP: `ship`,
+  TRANSPORT: `transport`,
+  DRIVE: `drive`,
+  FLIGHT: `flight`,
+  TRAIN: `train`,
+};
 
 export const DESTINATION = [
   `Amsterdam`,
