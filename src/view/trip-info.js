@@ -12,27 +12,27 @@ export default class TripInfo extends Abstract {
   getTemplate() {
     return `<section class="trip-main__trip-info  trip-info">
               <div class="trip-info__main">
-                <h1 class="trip-info__title">${this._getCities(this._events)}</h1>
-                <p class="trip-info__dates">${this._getEventsPeriod(this._events)}</p>
+                <h1 class="trip-info__title">${this._getCities()}</h1>
+                <p class="trip-info__dates">${this._getEventsPeriod()}</p>
               </div>
               <p class="trip-info__cost">
-                Total: &euro;&nbsp;<span class="trip-info__cost-value">${this._getSumPointsPrice(this._events)}</span>
+                Total: &euro;&nbsp;<span class="trip-info__cost-value">${this._getSumPointsPrice()}</span>
               </p>
             </section>`;
   }
 
-  _getCities(events) {
-    const cities = events.map(({destination}) => destination);
+  _getCities() {
+    const cities = this._events.map(({destination}) => destination);
 
     return cities.length > POINT_COUNT_FOR_ROUT
       ? `${cities[0]} &mdash; ... &mdash; ${cities[cities.length - 1]}`
       : cities.join(` &mdash; `);
   }
 
-  _getEventsPeriod(events) {
-    if (events.length) {
-      const startDate = events[0].timeStart;
-      const endDate = events[events.length - 1].timeEnd;
+  _getEventsPeriod() {
+    if (this._events.length) {
+      const startDate = this._events[0].timeStart;
+      const endDate = this._events[this._events.length - 1].timeEnd;
       const monthStart = moment(startDate).format(`MMM`);
       const monthEnd = moment(endDate).format(`MMM`);
 
@@ -44,8 +44,8 @@ export default class TripInfo extends Abstract {
     return ``;
   }
 
-  _getSumPointsPrice(events) {
-    return events.reduce((accumulator, {offers, pointPrice}) => {
+  _getSumPointsPrice() {
+    return this._events.reduce((accumulator, {offers, pointPrice}) => {
       const offersTotalPrice = offers.reduce((accumulatorInner, {price, isChecked}) => {
         return isChecked ? price + accumulatorInner : accumulatorInner;
       }, 0);

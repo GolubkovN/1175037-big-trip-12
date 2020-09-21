@@ -9,7 +9,7 @@ import {generatePoint} from './mock/points.js';
 import {render, RenderPosition} from './utils/render.js';
 import {MenuItem} from './const.js';
 
-const POINT_COUNT = 10;
+const POINT_COUNT = 7;
 
 const points = new Array(POINT_COUNT).fill(``).map(generatePoint).sort((a, b) => a.timeStart - b.timeStart);
 

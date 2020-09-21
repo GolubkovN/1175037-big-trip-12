@@ -39,9 +39,7 @@ export default class Trip {
   init() {
     render(this._tripContainer, this._daysListComponent, RenderPosition.BEFOREEND);
 
-    if (this._getPoints().length > 0) {
-      this._renderTrip({renderSort: true});
-    }
+    this._renderTrip({renderSort: true});
   }
 
   rerenderTrip() {
@@ -191,7 +189,12 @@ export default class Trip {
 
   _renderTrip({renderSort} = {}) {
     if (this._getPoints().length === 0) {
+      if (this._sortingComponent === null) {
+        this._sortingComponent = null;
+      }
+      remove(this._sortingComponent);
       this._renderNoPoints();
+      return;
     } else {
 
       if (renderSort) {
