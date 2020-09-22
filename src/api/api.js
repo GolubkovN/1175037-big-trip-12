@@ -1,11 +1,19 @@
+import PointsModel from '../model/points.js';
+
 const Method = {
   GET: `GET`,
   PUT: `PUT`
 };
 
-const succesStatusRange = {
+const SuccesStatusRange = {
   MIN: 200,
   MAX: 299,
+};
+
+const UrlTypes = {
+  POINTS: `points`,
+  DESTINATIONS: `destinations`,
+  OFFERS: `offers`,
 };
 
 export default class Api {
@@ -15,18 +23,30 @@ export default class Api {
   }
 
   getPoints() {
-    return this._load({url: `points`})
-            .then(Api.toJSON);
+    return this._load({url: UrlTypes.POINTS})
+      .then(Api.toJSON)
+      .then((points) => points.map(PointsModel.adaptToClient));
   }
 
   updatePoints(point) {
     return this._load({
       url: `points/${point.id}`,
       method: Method.PUT,
-      body: JSON.stringify(point),
+      body: JSON.stringify(PointsModel.adaptToServer(point)),
       headers: new Headers({"Content-Type": `application/json`})
     })
+      .then(Api.toJSON)
+      .then(PointsModel.adaptToClient);
+  }
+
+  getDestinations() {
+    return this._load({url: UrlTypes.DESTINATIONS})
       .then(Api.toJSON);
+  }
+
+  getOffers() {
+    return this._load({url: UrlTypes.OFFERS})
+    .then(Api.toJSON);
   }
 
   _load({
@@ -46,8 +66,8 @@ export default class Api {
 
   static checkStatus(response) {
     if (
-      response.status < succesStatusRange.MIN
-      && response.status > succesStatusRange.MAX
+      response.status < SuccesStatusRange.MIN
+      && response.status > SuccesStatusRange.MAX
     ) {
       throw new Error(`${response.status}: ${response.statusText}`);
     }

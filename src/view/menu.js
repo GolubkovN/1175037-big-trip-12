@@ -35,7 +35,7 @@ export default class Menu extends Abstract {
   setMenuItem(menuItem) {
     const tableItem = this.getElement().querySelector(`#${MenuItem.TABLE}`);
     const statsItem = this.getElement().querySelector(`#${MenuItem.STATS}`);
-    this._activeMenuItem = menuItem;
+    this._activeMenuItem = this.getElement().querySelector(`#${menuItem}`);
     const activeClass = `trip-tabs__btn--active`;
 
     switch (this._activeMenuItem) {

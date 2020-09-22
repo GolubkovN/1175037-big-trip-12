@@ -98,8 +98,8 @@ export default class Trip {
         this._pointPresenter[data.id].init(data);
         break;
       case UpdateType.MINOR:
-        this._clearTrip();
-        this._renderTrip();
+        this._clearTrip({removeSort: true});
+        this._renderTrip({renderSort: true});
         break;
       case UpdateType.MAJOR:
         this._clearTrip({resetSortType: true, removeSort: true});
@@ -121,7 +121,7 @@ export default class Trip {
 
     this._currentSortType = sortType;
     this._clearTrip({removeSort: false});
-    this._renderTrip();
+    this._renderTrip({renderSort: false});
   }
 
   _renderSort() {
@@ -132,6 +132,12 @@ export default class Trip {
     this._sortingComponent = new SortingView(this._currentSortType);
     this._sortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
     render(this._tripContainer, this._sortingComponent, RenderPosition.AFTERBEGIN);
+  }
+
+  _removeSort() {
+    if (this._sortingComponent !== null) {
+      remove(this._sortingComponent);
+    }
   }
 
   _renderPoint(place, point) {
@@ -175,9 +181,8 @@ export default class Trip {
           .forEach((presenter) => presenter.destroy());
     this._pointPresenter = {};
     this._daysListComponent.clear();
-
     if (removeSort) {
-      remove(this._sortingComponent);
+      this._removeSort();
     }
 
     remove(this._noPointsComponent);
@@ -189,18 +194,12 @@ export default class Trip {
 
   _renderTrip({renderSort} = {}) {
     if (this._getPoints().length === 0) {
-      if (this._sortingComponent === null) {
-        this._sortingComponent = null;
-      }
-      remove(this._sortingComponent);
       this._renderNoPoints();
       return;
     } else {
-
       if (renderSort) {
         this._renderSort();
       }
-
       if (this._currentSortType === SortType.TIME || this._currentSortType === SortType.PRICE) {
         this._renderSortPoints();
       } else {

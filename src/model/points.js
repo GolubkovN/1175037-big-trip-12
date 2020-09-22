@@ -48,4 +48,44 @@ export default class Points extends Observer {
 
     this._notify(updateType);
   }
+
+  static adaptToClient(point) {
+    const adaptedPoint = Object.assign(
+        {},
+        point,
+        {
+          pointPrice: point.base_price,
+          timeStart: point[`date_from`] = new Date(point.date_from),
+          timeEnd: point[`date_to`] = new Date(point.date_to),
+          isFavorite: point.is_favorite
+        }
+    );
+
+    delete adaptedPoint.base_price;
+    delete adaptedPoint.date_from;
+    delete adaptedPoint.date_to;
+    delete adaptedPoint.is_favorite;
+
+    return adaptedPoint;
+  }
+
+  static adaptToServer(point) {
+    const adaptedPoint = Object.assign(
+        {},
+        point,
+        {
+          'base_price': point.pointPrice,
+          'date_from': point.timeStart instanceof Date ? point.timeStart.toISOString() : null,
+          'date_to': point.timeEnd instanceof Date ? point.timeEnd.toISOString() : null,
+          'is_favorite': point.isFavorite
+        }
+    );
+
+    delete adaptedPoint.pointPrice;
+    delete adaptedPoint.timeStart;
+    delete adaptedPoint.timeEnd;
+    delete adaptedPoint.isFavorite;
+
+    return adaptedPoint;
+  }
 }
