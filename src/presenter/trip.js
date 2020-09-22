@@ -3,7 +3,7 @@ import DaysListView from '../view/days-list.js';
 import DayView from '../view/days-item.js';
 import EmptyDayView from '../view/empty-day.js';
 import NoPointsView from '../view/no-points.js';
-import StatsView from '../view/stat.js';
+import StatPresenter from '../presenter/stat.js';
 import PointPresenter from '../presenter/point.js';
 import NewEventPresenter from '../presenter/new-event.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
@@ -20,8 +20,8 @@ export default class Trip {
     this._pointPresenter = {};
 
     this._sortingComponent = null;
-    this._statsComponent = null;
 
+    this._statPresenter = new StatPresenter(this._tripContainer);
     this._daysListComponent = new DaysListView();
     this._noPointsComponent = new NoPointsView();
 
@@ -56,12 +56,11 @@ export default class Trip {
   }
 
   renderStats() {
-    this._statsComponent = new StatsView(this._pointModel.getPoints());
-    render(this._tripContainer, this._statsComponent, RenderPosition.BEFOREEND);
+    this._statPresenter.init(this._pointModel.getPoints());
   }
 
   clearStats() {
-    remove(this._statsComponent);
+    this._statPresenter.destroy();
   }
 
   _getPoints() {

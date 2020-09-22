@@ -42,12 +42,13 @@ const pageMainElement = document.querySelector(`.page-body__page-main.page-main`
 const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
 
 const tripPresenter = new TripPresenter(tripEventsElement, pointModel, filterModel, addPointButtonComponent);
+const filterPresenter = new FilterPresenter(controlsElement, filterModel, pointModel);
 api.getPoints().then((points) => {
   pointModel.setPoints(points);
 });
 
 tripPresenter.init();
-new FilterPresenter(controlsElement, filterModel, pointModel).init();
+filterPresenter.init();
 
 const handleAddClick = () => {
   tripPresenter.createPoint();
