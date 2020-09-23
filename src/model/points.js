@@ -6,8 +6,10 @@ export default class Points extends Observer {
     this._points = [];
   }
 
-  setPoints(points) {
+  setPoints(updateType, points) {
     this._points = points.slice();
+
+    this._notify(updateType);
   }
 
   getPoints() {
@@ -55,9 +57,17 @@ export default class Points extends Observer {
         point,
         {
           pointPrice: point.base_price,
-          timeStart: point[`date_from`] = new Date(point.date_from),
-          timeEnd: point[`date_to`] = new Date(point.date_to),
-          isFavorite: point.is_favorite
+          timeStart: new Date(point.date_from),
+          timeEnd: new Date(point.date_to),
+          isFavorite: point.is_favorite,
+          type: {
+            name: point.type,
+          },
+          destination: point.destination.name,
+          information: {
+            description: point.destination.description,
+            url: point.destination.pictures
+          }
         }
     );
 
@@ -65,6 +75,10 @@ export default class Points extends Observer {
     delete adaptedPoint.date_from;
     delete adaptedPoint.date_to;
     delete adaptedPoint.is_favorite;
+    delete adaptedPoint.type;
+    delete adaptedPoint.destination.name;
+    delete adaptedPoint.destination.description;
+    delete adaptedPoint.destination.pictures;
 
     return adaptedPoint;
   }
@@ -77,7 +91,11 @@ export default class Points extends Observer {
           'base_price': point.pointPrice,
           'date_from': point.timeStart instanceof Date ? point.timeStart.toISOString() : null,
           'date_to': point.timeEnd instanceof Date ? point.timeEnd.toISOString() : null,
-          'is_favorite': point.isFavorite
+          'is_favorite': point.isFavorite,
+          'type': point.type.name,
+          'destination.name': point.destination,
+          'destination.description': point.information.description,
+          'destination.pictures': point.information.url,
         }
     );
 
@@ -85,6 +103,10 @@ export default class Points extends Observer {
     delete adaptedPoint.timeStart;
     delete adaptedPoint.timeEnd;
     delete adaptedPoint.isFavorite;
+    delete adaptedPoint.type.name;
+    delete adaptedPoint.destination;
+    delete adaptedPoint.information.description;
+    delete adaptedPoint.information.url;
 
     return adaptedPoint;
   }

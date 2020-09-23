@@ -1,3 +1,4 @@
+import TripInfoView from '../view/trip-info.js';
 import SortingView from '../view/sorting.js';
 import DaysListView from '../view/days-list.js';
 import DayView from '../view/days-item.js';
@@ -5,32 +6,39 @@ import EmptyDayView from '../view/empty-day.js';
 import NoPointsView from '../view/no-points.js';
 import StatPresenter from '../presenter/stat.js';
 import PointPresenter from '../presenter/point.js';
+import LoadingView from '../view/loading.js';
 import NewEventPresenter from '../presenter/new-event.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
 import {filter} from '../utils/filter.js';
 import {SortType, UpdateType, UserAction} from '../const.js';
 
 export default class Trip {
-  constructor(tripContainer, pointModel, filterModel, newEventButton) {
+  constructor(tripContainer, tripInfoContainer, pointModel, filterModel, newEventButton, api) {
     this._pointModel = pointModel;
     this._filterModel = filterModel;
     this._tripContainer = tripContainer;
+    this._tripInfoContainer = tripInfoContainer;
+    this._api = api;
     this._currentSortType = SortType.EVENT;
-    this._eventsList =
     this._pointPresenter = {};
+    this._isLoading = true;
 
     this._sortingComponent = null;
+    this._tripInfoComponent = null;
 
     this._statPresenter = new StatPresenter(this._tripContainer);
     this._daysListComponent = new DaysListView();
     this._noPointsComponent = new NoPointsView();
+    this._loadingComponent = new LoadingView();
 
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleChangeMode = this._handleChangeMode.bind(this);
+    this._handleInfoUpdate = this._handleInfoUpdate.bind(this);
 
     this._pointModel.addObserver(this._handleModelEvent);
+    this._pointModel.addObserver(this._handleInfoUpdate);
     this._filterModel.addObserver(this._handleModelEvent);
 
     this._newPointPresenter = new NewEventPresenter(this._daysListComponent, this._handleViewAction, newEventButton);
@@ -80,13 +88,19 @@ export default class Trip {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._pointModel.updatePoint(updateType, update);
+        this._api.updatePoints(update).then((response) => {
+          this._pointModel.updatePoint(updateType, response);
+        });
         break;
       case UserAction.ADD_POINT:
-        this._pointModel.addPoint(updateType, update);
+        this._api.addPoint(update).then((response) => {
+          this._pointModel.addPoint(updateType, response);
+        });
         break;
       case UserAction.DELETE_POINT:
-        this._pointModel.deletePoint(updateType, update);
+        this._api.deletePoint(update).then(() => {
+          this._pointModel.deletePoint(updateType, update);
+        });
         break;
     }
   }
@@ -103,6 +117,11 @@ export default class Trip {
       case UpdateType.MAJOR:
         this._clearTrip({resetSortType: true, removeSort: true});
         this._renderTrip({renderSort: true});
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderTrip();
         break;
     }
   }
@@ -121,6 +140,15 @@ export default class Trip {
     this._currentSortType = sortType;
     this._clearTrip({removeSort: false});
     this._renderTrip({renderSort: false});
+  }
+
+  _handleInfoUpdate() {
+    this._renderTripInfo();
+  }
+
+  _renderTripInfo() {
+    this._tripInfoComponent = new TripInfoView(this._pointModel.getPoints());
+    render(this._tripInfoContainer, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderSort() {
@@ -151,6 +179,10 @@ export default class Trip {
     this._getPoints()
       .forEach((point) => this._renderPoint(eventsList, point));
     render(this._daysListComponent, emptyDayComponent, RenderPosition.BEFOREEND);
+  }
+
+  _renderLoading() {
+    render(this._tripContainer, this._loadingComponent, RenderPosition.BEFOREEND);
   }
 
   _renderNoPoints() {
@@ -185,6 +217,7 @@ export default class Trip {
     }
 
     remove(this._noPointsComponent);
+    remove(this._loadingComponent);
 
     if (resetSortType) {
       this._currentSortType = SortType.EVENT;
@@ -192,6 +225,10 @@ export default class Trip {
   }
 
   _renderTrip({renderSort} = {}) {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
     if (this._getPoints().length === 0) {
       this._renderNoPoints();
       return;

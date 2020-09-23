@@ -1,4 +1,3 @@
-// import TripInfoView from './view/trip-info.js';
 import MenuView from './view/menu.js';
 import NewEvenetButtonView from './view/new-event-button.js';
 import FilterPresenter from './presenter/filter.js';
@@ -6,46 +5,41 @@ import TripPresenter from './presenter/trip.js';
 import PointsModel from './model/points.js';
 import FilterModel from './model/filter.js';
 import Api from './api/api.js';
-// import {generatePoint} from './mock/points.js';
 import {render, RenderPosition} from './utils/render.js';
-import {MenuItem} from './const.js';
+import {MenuItem, UpdateType} from './const.js';
 
-// const POINT_COUNT = 7;
 const END_POINT = `https://12.ecmascript.pages.academy/big-trip`;
 const AUTHORIZATION = `Basic qweqwuyeweyr3ieyriwuery`;
 
-// const points = new Array(POINT_COUNT).fill(``).map(generatePoint).sort((a, b) => a.timeStart - b.timeStart);
+const siteHeaderElement = document.querySelector(`.page-header`);
+const menuElement = siteHeaderElement.querySelector(`.trip-main`);
+const controlsElement = siteHeaderElement.querySelector(`.trip-main__trip-controls`);
+const tripMainElement = document.querySelector(`.trip-main`);
+const pageMainElement = document.querySelector(`.page-body__page-main.page-main`);
+const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
+
 const api = new Api(END_POINT, AUTHORIZATION);
 
 // Model
 const filterModel = new FilterModel();
 const pointModel = new PointsModel();
 
-// header
-const siteHeaderElement = document.querySelector(`.page-header`);
-// const menuElement = siteHeaderElement.querySelector(`.trip-main`);
-// const tripInfoComponent = new TripInfoView(points);
-// render(menuElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
-
-// Menu
+// view
 const menuComponent = new MenuView();
-const controlsElement = siteHeaderElement.querySelector(`.trip-main__trip-controls`);
-render(controlsElement, menuComponent, RenderPosition.AFTERBEGIN);
-
-// button
-const tripMainElement = document.querySelector(`.trip-main`);
 const addPointButtonComponent = new NewEvenetButtonView();
-render(tripMainElement, addPointButtonComponent, RenderPosition.BEFOREEND);
 
-// main content
-const pageMainElement = document.querySelector(`.page-body__page-main.page-main`);
-const tripEventsElement = pageMainElement.querySelector(`.trip-events`);
-
-const tripPresenter = new TripPresenter(tripEventsElement, pointModel, filterModel, addPointButtonComponent);
+// presenters
+const tripPresenter = new TripPresenter(
+    tripEventsElement,
+    menuElement,
+    pointModel,
+    filterModel,
+    addPointButtonComponent,
+    api
+);
 const filterPresenter = new FilterPresenter(controlsElement, filterModel, pointModel);
-api.getPoints().then((points) => {
-  pointModel.setPoints(points);
-});
+
+render(tripMainElement, addPointButtonComponent, RenderPosition.BEFOREEND);
 
 tripPresenter.init();
 filterPresenter.init();
@@ -77,4 +71,15 @@ const handleMenuClick = (menuItem) => {
   }
 };
 
-menuComponent.setMenuClickHandler(handleMenuClick);
+api.getPoints()
+  .then((points) => {
+    pointModel.setPoints(UpdateType.INIT, points);
+    console.log(points);
+    render(controlsElement, menuComponent, RenderPosition.AFTERBEGIN);
+    menuComponent.setMenuClickHandler(handleMenuClick);
+  })
+  .catch(() =>{
+    pointModel.setPoints(UpdateType.INIT, []);
+    render(controlsElement, menuComponent, RenderPosition.AFTERBEGIN);
+    menuComponent.setMenuClickHandler(handleMenuClick);
+  });
