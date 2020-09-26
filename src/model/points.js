@@ -57,16 +57,16 @@ export default class Points extends Observer {
         point,
         {
           pointPrice: point.base_price,
-          timeStart: new Date(point.date_from),
-          timeEnd: new Date(point.date_to),
+          timeStart: point.date_from !== null ? new Date(point.date_from) : point.date_from,
+          timeEnd: point.date_to !== null ? new Date(point.date_to) : point.date_to,
           isFavorite: point.is_favorite,
           type: {
             name: point.type,
           },
           destination: point.destination.name,
           information: {
-            description: point.destination.description,
-            url: point.destination.pictures
+            description: point.destination.description || ``,
+            url: point.destination.pictures || []
           }
         }
     );
@@ -76,9 +76,7 @@ export default class Points extends Observer {
     delete adaptedPoint.date_to;
     delete adaptedPoint.is_favorite;
     delete adaptedPoint.type;
-    delete adaptedPoint.destination.name;
-    delete adaptedPoint.destination.description;
-    delete adaptedPoint.destination.pictures;
+    delete adaptedPoint.destination;
 
     return adaptedPoint;
   }
@@ -93,9 +91,11 @@ export default class Points extends Observer {
           'date_to': point.timeEnd instanceof Date ? point.timeEnd.toISOString() : null,
           'is_favorite': point.isFavorite,
           'type': point.type.name,
-          'destination.name': point.destination,
-          'destination.description': point.information.description,
-          'destination.pictures': point.information.url,
+          'destination': {
+            name: point.destination.name,
+            description: point.information.description || ``,
+            pictures: point.information.url || [],
+          },
         }
     );
 

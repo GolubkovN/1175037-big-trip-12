@@ -74,7 +74,6 @@ const handleMenuClick = (menuItem) => {
 api.getPoints()
   .then((points) => {
     pointModel.setPoints(UpdateType.INIT, points);
-    console.log(points);
     render(controlsElement, menuComponent, RenderPosition.AFTERBEGIN);
     menuComponent.setMenuClickHandler(handleMenuClick);
   })

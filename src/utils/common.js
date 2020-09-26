@@ -13,5 +13,5 @@ export const getRandomElement = (arr) => arr[getRandomInteger(0, arr.length - 1)
 
 export const getBooleanValue = () => Boolean(getRandomInteger(0, 1));
 
-export const getType = (name) => PATH_TYPE.find((item) => item.name === name);
+export const getType = (name) => PATH_TYPE.find((item) => item === name);
 

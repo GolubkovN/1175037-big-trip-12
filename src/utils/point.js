@@ -14,8 +14,6 @@ export const normalDuration = (start, end) => {
   );
 };
 
-export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
-
 export const filterOffers = (name) => OFFERS.filter((offer) => offer.type === name);
 
 export const remove = (component) => {

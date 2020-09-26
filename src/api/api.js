@@ -4,18 +4,12 @@ const Method = {
   GET: `GET`,
   PUT: `PUT`,
   POST: `POST`,
-  DELETE: `DELETE`,
+  DELETE: `DELETE`
 };
 
-const SuccesStatusRange = {
+const SuccessHTTPStatusRange = {
   MIN: 200,
-  MAX: 299,
-};
-
-const UrlTypes = {
-  POINTS: `points`,
-  DESTINATIONS: `destinations`,
-  OFFERS: `offers`,
+  MAX: 299
 };
 
 export default class Api {
@@ -25,9 +19,20 @@ export default class Api {
   }
 
   getPoints() {
-    return this._load({url: UrlTypes.POINTS})
+    return this._load({url: `points`})
       .then(Api.toJSON)
       .then((points) => points.map(PointsModel.adaptToClient));
+  }
+
+  updatePoint(point) {
+    return this._load({
+      url: `points/${point.id}`,
+      method: Method.PUT,
+      body: JSON.stringify(PointsModel.adaptToServer(point)),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then(Api.toJSON)
+      .then(PointsModel.adaptToClient);
   }
 
   addPoint(point) {
@@ -44,52 +49,20 @@ export default class Api {
   deletePoint(point) {
     return this._load({
       url: `points/${point.id}`,
-      method: Method.DELETE
+      method: Method.DELETE,
     });
   }
 
-  updatePoints(point) {
-    return this._load({
-      url: `points/${point.id}`,
-      method: Method.PUT,
-      body: JSON.stringify(PointsModel.adaptToServer(point)),
-      headers: new Headers({"Content-Type": `application/json`})
-    })
-      .then(Api.toJSON)
-      .then(PointsModel.adaptToClient);
-  }
-
-  getDestinations() {
-    return this._load({url: UrlTypes.DESTINATIONS})
-      .then(Api.toJSON);
-  }
-
-  getOffers() {
-    return this._load({url: UrlTypes.OFFERS})
-    .then(Api.toJSON);
-  }
-
-  _load({
-    url,
-    method = Method.GET,
-    body = null,
-    headers = new Headers()
-  }) {
+  _load({url, method = Method.GET, body = null, headers = new Headers()}) {
     headers.append(`Authorization`, this._authorization);
 
-    return fetch(
-        `${this._endPoint}/${url}`,
-        {method, body, headers}
-    )
+    return fetch(`${this._endPoint}/${url}`, {method, body, headers})
       .then(Api.checkStatus)
       .catch(Api.catchError);
   }
 
   static checkStatus(response) {
-    if (
-      response.status < SuccesStatusRange.MIN
-      && response.status > SuccesStatusRange.MAX
-    ) {
+    if (response.status < SuccessHTTPStatusRange.MIN && response.status > SuccessHTTPStatusRange.MAX) {
       throw new Error(`${response.status}: ${response.statusText}`);
     }
 
